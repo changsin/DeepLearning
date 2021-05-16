@@ -32,6 +32,8 @@ and a probabilistic neural network to measure model's confidence together with t
 - The project proposal and the report are under project folder
 - [Measuring dataset quality with probability](project/measuring_dataset_quality_with_probability.ipnb)
 contains the code and documentation for the results.
+- The report is also under the same project folder:
+ [How to measure dataset quality](project/how_to_measure_dataset_quality.md)
 - The rest of experimental notebooks (not cleaned yet) are under notebook folder.
 
  
