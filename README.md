@@ -1,10 +1,12 @@
 # Fullstack Deep Learning
-This is the repository for [Spring 2021 Fullstack Deep Learning course](https://fullstackdeeplearning.com/spring2021)
-![fsdl banner](resources/fsdl-banner.png)
+This is the repository for
+ [Spring 2021 Fullstack Deep Learning course ![fsdl banner](resources/fsdl-banner.png)](https://fullstackdeeplearning.com/spring2021)
+
 
 The final project is creating a Data Flywheel in MLOps pipeline.
-The video presentation is [Creating Data Flywheel in MLOps Pipeline](https://youtu.be/rf9nAk0XnqY).
-![youtube](resources/presentation-video-preview.png)
+The video presentation is
+ [Creating Data Flywheel in MLOps Pipeline ![youtube](resources/presentation-video-preview.png)](https://youtu.be/rf9nAk0XnqY).
+
 
 # Problems Statement
 How can we build an MLOps pipeline that can improve itself over time
@@ -27,7 +29,9 @@ and a probabilistic neural network to measure model's confidence together with t
 
 # Code
 - The entire code is in [here](https://github.com/mahavird/fsdl_project).
-- The project proposal and the report are in [notebook](project/measuring_dataset_quality_with_probability.ipnb)
+- The project proposal and the report are under project folder
+- [Measuring dataset quality with probability](project/measuring_dataset_quality_with_probability.ipnb)
+contains the code and documentation for the results.
 - The rest of experimental notebooks (not cleaned yet) are under notebook folder.
 
  
