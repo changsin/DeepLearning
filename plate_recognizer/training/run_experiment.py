@@ -7,7 +7,7 @@ import torch
 import pytorch_lightning as pl
 import wandb
 
-from text_recognizer import lit_models
+from plate_recognizer import lit_models
 
 
 # In order to ensure reproducible experiments, we must set random seeds.
