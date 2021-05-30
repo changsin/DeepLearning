@@ -7,8 +7,8 @@ import argparse
 from torch.utils.data import ConcatDataset, DataLoader
 import pytorch_lightning as pl
 
-from text_recognizer import util
-from text_recognizer.data.util import BaseDataset
+from plate_recognizer import util
+from plate_recognizer.data.util import BaseDataset
 
 
 def load_and_print_info(data_module_class) -> None:
