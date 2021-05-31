@@ -54,16 +54,16 @@ class KaggleData():
 
     def get_data(self, data_type=DataType.Train, cluster_id=-1):
         if data_type == DataType.Val:
-            X_val = Cluster.get_merged_data(self.X_val_d, id)
-            Y_val = Cluster.get_merged_data(self.Y_val_d, id)
+            X_val = Cluster.get_merged_data(self.X_val_d, cluster_id)
+            Y_val = Cluster.get_merged_data(self.Y_val_d, cluster_id)
             return X_val, Y_val
         elif data_type == DataType.Test:
-            X_test = Cluster.get_merged_data(self.X_test_d, id)
-            Y_test = Cluster.get_merged_data(self.Y_test_d, id)
+            X_test = Cluster.get_merged_data(self.X_test_d, cluster_id)
+            Y_test = Cluster.get_merged_data(self.Y_test_d, cluster_id)
             return X_test, Y_test
         else:
-            X_train = Cluster.get_merged_data(self.X_train_d, id)
-            Y_train = Cluster.get_merged_data(self.Y_train_d, id)
+            X_train = Cluster.get_merged_data(self.X_train_d, cluster_id)
+            Y_train = Cluster.get_merged_data(self.Y_train_d, cluster_id)
             return X_train, Y_train
 
     def prepare_data(self, *args, **kwargs) -> None:
