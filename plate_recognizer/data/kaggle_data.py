@@ -67,11 +67,11 @@ class KaggleData():
     def cluster_data(self, K=5):
         cluster = Cluster()
         self.X_pca, pca = cluster.get_pca(self.X, self.Y)
-        self.X_pca_clusters, self.kmeans_pca = cluster.get_clusters(X_pca, K)
+        self.X_pca_clusters, self.kmeans_pca = cluster.get_clusters(self.X_pca, K)
         # plot_pca_clusters(X_pca, kmeans_pca)
         # plot_cluster_histogram(X_pca_clusters, K)
 
-        X_d, y_d = cluster.to_clusters_dict(self.X, self.Y, X_pca_clusters, K)
+        X_d, y_d = cluster.to_clusters_dict(self.X, self.Y, self.X_pca_clusters, K)
         self.partition_on_clusters(X_d, y_d, range(K))
 
         self.X_train = self.get_merged_data(self.X_train_d)
