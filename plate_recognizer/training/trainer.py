@@ -9,14 +9,14 @@ logger = get_logger(__name__)
 
 
 class Trainer():
-    def __init__(self, model):
+    def __init__(self, model, name="Kaggle-license-plates"):
         self.model = model
     
-        wandb.init(project="Kaggle-license-plates",
+        wandb.init(project=name,
                 config={
                     "batch_size": 16,
                     "learning_rate": 0.01,
-                    "dataset": "Kaggle-license-plates",
+                    "dataset": name,
                 })
 
     def train(self, dataset, epochs=50, batch_size=16, is_plot_predictions=False):
