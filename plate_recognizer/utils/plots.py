@@ -33,7 +33,6 @@ def plot_images(X, y, limit=10):
     axis.add_patch(rect_ori)
     plt.imshow(np.clip(image, 0, 1))
 
-
 def plot_pca(X_train_pca, y_train):
     # plot the scatter plot along the way
     plt.figure(1)
@@ -166,3 +165,29 @@ def plot_predictions(X, y_gt, y_preds):
     plt.title("IOU: {:0.2f} std: {:0.2f}".format(iou, mean_stds[i]))
     # plt.title("mean std: {:0.2f}".format(mean_stds[sample_ids[i]]))
     plt.imshow(np.clip(image, 0, 1))
+
+def plot_stats(stats, types, titles):
+  x_bar = np.arange(K)
+  bar_width = .35
+
+  fig = plt.figure(figsize=(20,40))
+
+  for i, stat in zip(range(len(stats)), stats):
+    ax = fig.add_subplot(10, 4, i+1)
+    # plt.axis('off')
+
+    for t in types:
+      if "mAP" == t:
+        rects1 = ax.bar(x_bar - bar_width/3, stat[:, 0], label="mAP")
+      if "std" == t:
+        rects2 = ax.bar(x_bar + bar_width/3, stat[:, 1], label="std")
+      if "accuracy" == t:
+        rects3 = ax.bar(x_bar + bar_width/3, stat[:, 2], label="accuracy")
+
+    ax.set_xticks(x_bar)
+    ax.set_xticklabels(x_bar)
+    ax.set_title(titles[i])
+
+    ax.legend()
+
+  fig.tight_layout()
