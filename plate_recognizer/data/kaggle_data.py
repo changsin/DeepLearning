@@ -1,6 +1,8 @@
 """Kaggle DataModule"""
 from lxml import etree
 from matplotlib import pyplot as plt
+from sklearn.model_selection import train_test_split
+
 from FSDL.plate_recognizer.data.cluster import Cluster
 from FSDL.plate_recognizer.data.base_data_module import DataType
 
