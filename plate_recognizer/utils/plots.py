@@ -167,30 +167,30 @@ def plot_predictions(X, y_gt, y_preds):
     plt.imshow(np.clip(image, 0, 1))
 
 def plot_stats(stats, types, titles, K=5):
-  x_bar = np.arange(K)
-  bar_width = .35
+    x_bar = np.arange(K)
+    bar_width = .35
 
-  fig = plt.figure(figsize=(20,40))
+    fig = plt.figure(figsize=(20,40))
 
-  for i, stat in zip(range(len(stats)), stats):
-    ax = fig.add_subplot(10, 4, i+1)
-    # plt.axis('off')
+    for i, stat in zip(range(len(stats)), stats):
+        ax = fig.add_subplot(10, 4, i+1)
+        # plt.axis('off')
 
-    for t in types:
-      if "mAP" == t:
-        rects1 = ax.bar(x_bar - bar_width/3, stat[:, 0], label="mAP")
-      if "std" == t:
-        rects2 = ax.bar(x_bar + bar_width/3, stat[:, 1], label="std")
-      if "accuracy" == t:
-        rects3 = ax.bar(x_bar + bar_width/3, stat[:, 2], label="accuracy")
+        for t in types:
+            if "mAP" == t:
+                rects1 = ax.bar(x_bar - bar_width/3, stat[:, 0], label="mAP")
+            if "std" == t:
+                rects2 = ax.bar(x_bar + bar_width/3, stat[:, 1], label="std")
+            if "accuracy" == t:
+                rects3 = ax.bar(x_bar + bar_width/3, stat[:, 2], label="accuracy")
 
-    ax.set_xticks(x_bar)
-    ax.set_xticklabels(x_bar)
-    ax.set_title(titles[i])
+        ax.set_xticks(x_bar)
+        ax.set_xticklabels(x_bar)
+        ax.set_title(titles[i])
 
-    ax.legend()
+        ax.legend()
 
-  fig.tight_layout()
+    fig.tight_layout()
 
 # plot line graph for comparing different noise level results
 def plot_stats_by_type(stats, x_bins, column, title, clusters=bins, merge=False):
