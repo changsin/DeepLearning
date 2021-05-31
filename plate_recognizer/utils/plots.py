@@ -191,3 +191,19 @@ def plot_stats(stats, types, titles):
     ax.legend()
 
   fig.tight_layout()
+
+# plot line graph for comparing different noise level results
+def plot_stats_by_type(stats, x_bins, column, title, clusters=bins, merge=False):
+  fig = plt.figure(figsize=(20,40))
+  ax = fig.add_subplot(10, 4, 1)
+
+  if merge:
+    p = ax.plot(x_bins, [np.mean(run) for run in stats_noise[:, :, 1]], label='avg')
+  else:
+    x_bins_len = len(x_bins)
+    for cluster_id in range(len(clusters)):
+      p = ax.plot(x_bins, stats[:x_bins_len, :, column][:, cluster_id], label=cluster_id)
+    # p = ax.plot(noise_levels, stats[:bins, :, column][:, 0], color='green', label='0')
+
+  ax.set_title(title)
+  ax.legend()
