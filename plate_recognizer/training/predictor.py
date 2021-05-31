@@ -56,7 +56,6 @@ def predict_on_models(X_d, y_d, bins, models):
                                                                     std,
                                                                     accuracy))
             cluster_stats.append([np.round(m_ap['avg_prec'], 3), np.round(std, 3), np.round(accuracy, 3)])
-
-            stats.append(cluster_stats)
+        stats.append(cluster_stats)
 
     return np.array(stats)
