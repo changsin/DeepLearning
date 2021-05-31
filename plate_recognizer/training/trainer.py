@@ -47,7 +47,7 @@ class Trainer():
 
         # # print(rectified_predictions)
         # m_ap = calculate_map(y_test*IMAGE_SIZE, rectified_predictions*IMAGE_SIZE)
-        return model
+        return self.model
     
     # run predictions many times to get the distributions
     def sample_predictions(self, X, iterations=100):

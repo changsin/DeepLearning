@@ -76,12 +76,12 @@ class KaggleData():
         X_d, y_d = cluster.to_clusters_dict(self.X, self.Y, self.X_pca_clusters, K)
         self.partition_on_clusters(X_d, y_d, range(K))
 
-        self.X_train = self.get_merged_data(self.X_train_d)
-        self.Y_train = self.get_merged_data(self.Y_train_d)
-        self.X_val = self.get_merged_data(self.X_val_d)
-        self.Y_val = self.get_merged_data(self.Y_val_d)
-        self.X_test = self.get_merged_data(self.X_test_d)
-        self.Y_test = self.get_merged_data(self.Y_test_d)
+        self.X_train = Cluster.get_merged_data(self.X_train_d)
+        self.Y_train = Cluster.get_merged_data(self.Y_train_d)
+        self.X_val = Cluster.get_merged_data(self.X_val_d)
+        self.Y_val = Cluster.get_merged_data(self.Y_val_d)
+        self.X_test = Cluster.get_merged_data(self.X_test_d)
+        self.Y_test = Cluster.get_merged_data(self.Y_test_d)
 
     # def setup(self, stage=None) -> None:
 
@@ -211,16 +211,3 @@ class KaggleData():
 
             self.X_test_d[id] = Xt_test
             self.Y_test_d[id] = yt_test
-
-    def get_merged_data(self, clusters_d):
-        merged = []
-        for cluster_id, cluster in clusters_d.items():
-            if cluster_id == 0:
-                merged = cluster
-            else:
-                merged = np.vstack((merged, cluster))
-
-        return merged
-
-# if __name__ == "__main__":
-    # load_and_print_info(MNIST)

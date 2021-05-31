@@ -67,6 +67,17 @@ class Cluster():
         return X_dict, y_dict
 
     @staticmethod
+    def get_merged_data(self, clusters_d):
+        merged = []
+        for cluster_id, cluster in clusters_d.items():
+            if cluster_id == 0:
+                merged = cluster
+            else:
+                merged = np.vstack((merged, cluster))
+
+        return merged
+
+    @staticmethod
     def find_duplicates(X_train_pca):
         # Calculate distances of all points
         distances = cdist(X_train_pca, X_train_pca)
