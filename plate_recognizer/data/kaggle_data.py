@@ -2,6 +2,7 @@
 from lxml import etree
 from matplotlib import pyplot as plt
 from FSDL.plate_recognizer.data.cluster import Cluster
+from FSDL.plate_recognizer.data.base_data_module import DataType
 
 import argparse
 import cv2
