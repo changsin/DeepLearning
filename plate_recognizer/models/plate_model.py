@@ -13,7 +13,7 @@ class PlateModel():
     def __init__(self, use_probability=True):
         self.use_probability = use_probability
 
-    def create_model(train_size):
+    def create_model(self, train_size):
         kl_divergence_fn = lambda q, p, _: dist.kl_divergence(q, p) / tf.cast(train_size, dtype=tf.float32)
 
         model = Sequential()
