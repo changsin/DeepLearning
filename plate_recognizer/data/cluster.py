@@ -70,7 +70,7 @@ class Cluster():
         return X_dict, y_dict
 
     @staticmethod
-    def get_merged_data(self, clusters_d):
+    def get_merged_data(clusters_d):
         merged = []
         for cluster_id, cluster in clusters_d.items():
             if cluster_id == 0:
