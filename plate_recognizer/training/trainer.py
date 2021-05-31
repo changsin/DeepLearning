@@ -1,6 +1,7 @@
 
 import logging
 import wandb
+import numpy as np
 
 from FSDL.plate_recognizer.data.base_data_module import DataType
 
