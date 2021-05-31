@@ -3,6 +3,8 @@ import numpy as np
 
 from matplotlib import pyplot as plt
 
+IMAGE_SIZE = 224
+
 
 def create_patch_rectangle(y, color):
   # width = y[2] - y[0]
