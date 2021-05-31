@@ -1,5 +1,8 @@
 from copy import deepcopy
 
+IMAGE_SIZE = 224
+
+
 #GT Boxes
 gt_boxes= {"img_00285.png": [[480, 457, 515, 529], [637, 435, 676, 536]]}
 
@@ -26,9 +29,20 @@ def create_pred_boxes(y_preds, scores):
     }
   return pred_boxes
 
-def calculate_map(y_test_scaled, y_preds_scaled, threshold=0.5):
-  # y_test_scaled = y_test*IMAGE_SIZE
-  # y_preds_scaled = y_preds*IMAGE_SIZE
+# NB: the values are scaled down to 0..1
+def to_rect(y):
+  width = np.clip(y[2], 0, IMAGE_SIZE)
+  height = np.clip(y[3], 0, IMAGE_SIZE)
+
+  if width < 0 or height < 0:
+    print("ERROR: negative width or height ", width, height, y)
+    raise AssertionError("Negative width or height")
+
+  return int(y[0] - width/2), int(y[1] - height/2), int(y[0] + width/2), int(y[1] + height/2)
+
+def calculate_map(y_test, y_preds, threshold=0.5):
+  y_test_scaled = to_rect(y_test*IMAGE_SIZE)
+  y_preds_scaled = to_rect(y_preds*IMAGE_SIZE)
   scores = [[calc_iou(y_test_scaled[id], y_preds_scaled[id])] for id in range(len(y_test_scaled))]
 
   gt_boxes = create_gt_boxes(y_test_scaled)
