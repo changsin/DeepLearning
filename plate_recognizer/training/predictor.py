@@ -7,6 +7,8 @@ from FSDL.plate_recognizer.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
+IMAGE_SIZE = 224
+
 
 # run predictions many times to get the distributions
 def sample_predictions(model, X, iterations=50):
