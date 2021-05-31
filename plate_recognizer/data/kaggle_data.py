@@ -1,7 +1,7 @@
 """Kaggle DataModule"""
 from lxml import etree
 from matplotlib import pyplot as plt
-from plate_recognizer.data.cluster import Cluster
+from FSDL.plate_recognizer.data.cluster import Cluster
 
 import argparse
 import cv2
