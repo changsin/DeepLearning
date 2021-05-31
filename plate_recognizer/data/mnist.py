@@ -42,6 +42,17 @@ class MNIST(BaseDataModule):
         self.data_train, self.data_val = random_split(mnist_full, [55000, 5000])  # type: ignore
         self.data_test = TorchMNIST(self.data_dir, train=False, transform=self.transform)
 
+    def setup(self, stage: Optional[str] = None) -> None:
+        """
+        Split into train, val, test, and set dims.
+        Should assign `torch Dataset` objects to self.data_train, self.data_val, and optionally self.data_test.
+        """
 
-if __name__ == "__main__":
-    load_and_print_info(MNIST)
+    def train_dataloader(self):
+        return DataLoader(
+            self.data_train,
+            shuffle=True,
+            batch_size=self.batch_size,
+            num_workers=self.num_workers,
+            pin_memory=self.on_gpu,
+        )
