@@ -62,8 +62,8 @@ class KaggleData():
             return self.X_train, self.Y_train
 
     def prepare_data(self, *args, **kwargs) -> None:
-        self.X_raw = self.load_images(DATA_ROOT + "/images/")
-        self.Y_raw = self.load_labels(DATA_ROOT + "/annotations.json")
+        self.X_raw = self.load_images(self.X_path)
+        self.Y_raw = self.load_labels(self.Y_path)
         self.X, self.Y = self.normalize(self.X_raw, self.Y_raw)
 
     def cluster_data(self, K=5):
