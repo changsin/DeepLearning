@@ -213,9 +213,9 @@ class KaggleData():
         merged = []
         for cluster_id, cluster in clusters_d.items():
             if cluster_id == 0:
-            merged = cluster
+                merged = cluster
             else:
-            merged = np.vstack((merged, cluster))
+                merged = np.vstack((merged, cluster))
 
         return merged
 
