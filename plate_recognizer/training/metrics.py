@@ -113,13 +113,13 @@ def get_model_scores(pred_boxes):
     Returns:
         dict: keys are model_scores and values are image ids (usually filenames)
     """
-    model_score={}
+    model_score = {}
     for img_id, val in pred_boxes.items():
         for score in val['scores']:
             if score not in model_score.keys():
-                model_score[score]=[img_id]
+                model_score[score] = [img_id]
             else:
-                model_score[
+                model_score[score].append(img_id)
     return model_score
 
 # https://towardsdatascience.com/evaluating-performance-of-an-object-detection-model-137a349c517b
