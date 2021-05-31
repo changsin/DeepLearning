@@ -3,8 +3,9 @@
 from pathlib import Path
 from typing import Collection, Dict, Optional, Tuple, Union
 from enum import Enum
-from plate_recognizer import util
-from plate_recognizer.data.util import BaseDataset
+
+from FSDL.plate_recognizer import util
+from FSDL.plate_recognizer.data.util import BaseDataset
 from torch.utils.data import ConcatDataset, DataLoader
 
 import argparse
