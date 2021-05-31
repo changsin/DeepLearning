@@ -138,3 +138,31 @@ def plot_data_in_clusters(X_train_pca, kmeans, idx):
     plt.xticks(())
     plt.yticks(())
     plt.show()
+
+def plot_predictions(X, y_gt, y_preds):
+  fig = plt.figure(figsize=(20,40))
+
+  # The number of images for plotting is limited to 50
+  end_id = len(y_gt) if len(y_gt) < 50 else 50
+
+  y_preds_avg = average_sample_preds(y_preds)
+  stds = np.std(y_preds, axis=1)
+  mean_stds = np.mean(stds, axis=1)
+
+  for i in range(0, end_id):
+    axis = fig.add_subplot(10, 5, i+1)
+    plt.axis('off')
+    image = X[i]
+
+    rect_ori = create_patch_rectangle(y_gt[i]*IMAGE_SIZE, (0, 255/255, 0))
+    axis.add_patch(rect_ori)
+
+    # for each test image, there could be multiple predictions
+    for y_pred in y_preds[i]:
+      rect_pred = create_patch_rectangle(y_pred*IMAGE_SIZE, (255/255, 0, 0))
+      axis.add_patch(rect_pred)
+
+    iou = bb_iou(to_rect(y_preds_avg[i]*IMAGE_SIZE), to_rect(y_gt[i]*IMAGE_SIZE))
+    plt.title("IOU: {:0.2f} std: {:0.2f}".format(iou, mean_stds[i]))
+    # plt.title("mean std: {:0.2f}".format(mean_stds[sample_ids[i]]))
+    plt.imshow(np.clip(image, 0, 1))

@@ -1,6 +1,8 @@
 
 import wandb
 import numpy as np
+import FSDL.plate_recognizer.training.metrics
+import FSDL.plate_recognizer.training.predictor
 
 from FSDL.plate_recognizer.data.base_data_module import DataType
 from FSDL.plate_recognizer.utils.logger import get_logger
@@ -37,7 +39,7 @@ class Trainer():
 
         logger.info("Test results \n Loss: {}\n Accuracy: {}".format(test_loss, test_accuracy))
 
-        y_preds = self.sample_predictions(X_test, iterations=1)
+        y_preds = predictor.sample_predictions(X_test, iterations=1)
 
         if is_plot_predictions:
             plot_predictions(X_test, Y_test, y_preds)
@@ -49,18 +51,3 @@ class Trainer():
         # # print(rectified_predictions)
         # m_ap = calculate_map(y_test*IMAGE_SIZE, rectified_predictions*IMAGE_SIZE)
         return self.model
-    
-    # run predictions many times to get the distributions
-    def sample_predictions(self, X, iterations=100):
-        predicted = []
-        for _ in range(iterations):
-            predicted.append(self.model(X).numpy())
-
-        predicted = np.array(predicted)
-        # predicted = np.concatenate(predicted, axis=1)
-
-        # predicted = np.array([model_prob.predict(np.expand_dims(X_test[1], [0])) for i in range(iterations)])
-        # predicted = np.concatenate(predicted, axis=1)
-        reshaped = np.array([predicted[:, column] for column in range(0, predicted.shape[1])])
-
-        return reshaped
