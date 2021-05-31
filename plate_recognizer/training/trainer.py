@@ -35,7 +35,7 @@ class Trainer():
 
         test_loss, test_accuracy = self.model.evaluate(X_test, Y_test, steps=int(100))
 
-        logger.info("Test results \n Loss:", test_loss, '\n Accuracy', test_accuracy)
+        logger.info("Test results \n Loss: {}\n Accuracy: {}".format(test_loss, test_accuracy))
 
         y_preds = self.sample_predictions(X_test, iterations=1)
 
