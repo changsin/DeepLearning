@@ -4,25 +4,27 @@ from pathlib import Path
 from typing import Collection, Dict, Optional, Tuple, Union
 from enum import Enum
 
-from FSDL.plate_recognizer import util
-# from FSDL.plate_recognizer.data.util import BaseDataset
+from FSDL.plate_recognizer.utils import utils
 from torch.utils.data import ConcatDataset, DataLoader
 
 import argparse
+import logging
 # import pytorch_lightning as pl
 
 BATCH_SIZE = 16
 NUM_WORKERS = 0
 
+logger = logging.getLogger(__name__)
+
+
 def load_and_print_info(data_module_class) -> None:
-    """Load EMNISTLines and print info."""
     parser = argparse.ArgumentParser()
     data_module_class.add_to_argparse(parser)
     args = parser.parse_args()
     dataset = data_module_class(args)
     dataset.prepare_data()
     dataset.setup()
-    print(dataset)
+    logger.info(dataset)
 
 
 def _download_raw_dataset(metadata: Dict, dl_dirname: Path) -> Path:
@@ -30,9 +32,9 @@ def _download_raw_dataset(metadata: Dict, dl_dirname: Path) -> Path:
     filename = dl_dirname / metadata["filename"]
     if filename.exists():
         return filename
-    print(f"Downloading raw dataset from {metadata['url']} to {filename}...")
+    logger.info(f"Downloading raw dataset from {metadata['url']} to {filename}...")
     util.download_url(metadata["url"], filename)
-    print("Computing SHA-256...")
+    logger.info("Computing SHA-256...")
     sha256 = util.compute_sha256(filename)
     if sha256 != metadata["sha256"]:
         raise ValueError("Downloaded data file SHA-256 does not match that listed in metadata document.")

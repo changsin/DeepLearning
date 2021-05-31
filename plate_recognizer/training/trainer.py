@@ -10,11 +10,11 @@ class Trainer():
     def __init__(self, model):
         self.model = model
     
-        wandb.init(project="UFPR-cnn",
+        wandb.init(project="Kaggle-license-plates",
                 config={
                     "batch_size": 16,
                     "learning_rate": 0.01,
-                    "dataset": "UFPR-cnn",
+                    "dataset": "Kaggle-license-plates",
                 })
 
     def train(self, dataset, epochs=50, batch_size=16, is_plot_predictions=False):
