@@ -34,7 +34,7 @@ def plot_images(X, y, limit=10):
     plt.imshow(np.clip(image, 0, 1))
 
 
-def plot_pca(self, X_train_pca, y_train):
+def plot_pca(X_train_pca, y_train):
     # plot the scatter plot along the way
     plt.figure(1)
     plt.clf()
@@ -43,11 +43,11 @@ def plot_pca(self, X_train_pca, y_train):
     plt.colorbar()
 
 
-def plot_cluster_histogram(self, X_clusters, K):
+def plot_cluster_histogram(X_clusters, K):
     histo_x, bins = np.histogram(X_clusters.labels_, bins=range(K + 1))
     plt.bar(bins[:-1], histo_x, align='center')
 
-def plot_pca_clusters(self, X_train_pca, kmeans):
+def plot_pca_clusters(X_train_pca, kmeans):
     # kmeans, X_train_pca_clusters = get_clusters(X_train_pca)
 
     # Step size of the mesh. Decrease to increase the quality of the VQ.
@@ -91,7 +91,7 @@ def plot_pca_clusters(self, X_train_pca, kmeans):
     plt.yticks(())
     plt.show()
 
-def plot_data_in_clusters(self, X_train_pca, kmeans, idx):
+def plot_data_in_clusters(X_train_pca, kmeans, idx):
     # kmeans, X_train_pca_clusters = get_clusters(X_train_pca)
 
     # Step size of the mesh. Decrease to increase the quality of the VQ.
