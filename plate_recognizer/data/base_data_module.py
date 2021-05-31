@@ -2,14 +2,18 @@
 """Base DataModule class."""
 from pathlib import Path
 from typing import Collection, Dict, Optional, Tuple, Union
-import argparse
-
-from torch.utils.data import ConcatDataset, DataLoader
-import pytorch_lightning as pl
-
+from enum import Enum
 from plate_recognizer import util
 from plate_recognizer.data.util import BaseDataset
+from torch.utils.data import ConcatDataset, DataLoader
 
+import argparse
+import pytorch_lightning as pl
+
+class Move(Enum):
+    Train = 1
+    Val = 2
+    Test = 3
 
 def load_and_print_info(data_module_class) -> None:
     """Load EMNISTLines and print info."""

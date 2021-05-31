@@ -1,8 +1,6 @@
 
 
 class Trainer():
-    def __init__(self):
-
     def train(model, dataset, epochs=50, batch_size=16, is_plot_predictions=False):
         train_history = model.fit(x=dataset.get_x_train(), y=dataset.get_y_train(),
                                     validation_data=(dataset.get_x_val(), dataset.get_y_val()),
