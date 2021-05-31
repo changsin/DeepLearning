@@ -37,14 +37,14 @@ def to_rect(y):
   height = np.clip(y[3], 0, IMAGE_SIZE)
 
   if width < 0 or height < 0:
-    print("ERROR: negative width or height ", width, height, y)
+    logger.error("ERROR: negative width or height ", width, height, y)
     raise AssertionError("Negative width or height")
 
   return int(y[0] - width/2), int(y[1] - height/2), int(y[0] + width/2), int(y[1] + height/2)
 
 def calculate_map(y_test, y_preds, threshold=0.5):
-  y_test_scaled = to_rect(y_test*IMAGE_SIZE)
-  y_preds_scaled = to_rect(y_preds*IMAGE_SIZE)
+  y_test_scaled = [to_rect(y*IMAGE_SIZE) for y in y_test]
+  y_preds_scaled = [to_rect(y*IMAGE_SIZE) for y in y_preds]
   scores = [[calc_iou(y_test_scaled[id], y_preds_scaled[id])] for id in range(len(y_test_scaled))]
 
   gt_boxes = create_gt_boxes(y_test_scaled)
