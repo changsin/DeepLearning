@@ -53,7 +53,7 @@ class KaggleData():
         self.X_test = None
         self.Y_test = None
 
-    def get_data(data_type=DataType.Train):
+    def get_data(self, data_type=DataType.Train):
         if data_type == DataType.Val:
             return self.X_val, self.Y_val
         elif data_type == DataType.Test:
