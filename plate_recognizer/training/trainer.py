@@ -2,8 +2,6 @@
 import logging
 import wandb
 
-
-
 logger = logging.getLogger(__name__)
 
 class Trainer():
