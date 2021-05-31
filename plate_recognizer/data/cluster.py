@@ -66,7 +66,8 @@ class Cluster():
 
         return X_dict, y_dict
 
-    def find_duplicates(self, X_train_pca):
+    @staticmethod
+    def find_duplicates(X_train_pca):
         # Calculate distances of all points
         distances = cdist(X_train_pca, X_train_pca)
 
