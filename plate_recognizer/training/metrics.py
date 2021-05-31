@@ -1,5 +1,7 @@
 from copy import deepcopy
 
+import numpy as np
+
 IMAGE_SIZE = 224
 
 
