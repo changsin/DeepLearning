@@ -166,7 +166,8 @@ def plot_predictions(X, y_gt, y_preds):
     # plt.title("mean std: {:0.2f}".format(mean_stds[sample_ids[i]]))
     plt.imshow(np.clip(image, 0, 1))
 
-def plot_stats(stats, types, titles, x_bar):
+def plot_stats(stats, K, types, titles):
+  x_bar = np.arange(K)
   bar_width = .35
 
   fig = plt.figure(figsize=(20,40))
