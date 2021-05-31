@@ -19,7 +19,7 @@ pred_boxes={"img_00285.png": {"boxes":
 def create_gt_boxes(y_test):
   gt_boxes = dict()
   for id in range(len(y_test)):
-    gt_boxes[str(id)] = [list(y_test[id].tolist())]
+    gt_boxes[str(id)] = [list(y_test[id])]
   return gt_boxes
 
 def create_pred_boxes(y_preds, scores):
