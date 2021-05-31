@@ -1,4 +1,5 @@
 """Kaggle DataModule"""
+from copy import deepcopy
 from lxml import etree
 from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
@@ -66,12 +67,25 @@ class KaggleData():
         self.Y_raw = self.load_labels(self.Y_path)
         self.X, self.Y = self.normalize(self.X_raw, self.Y_raw)
 
-    def cluster_data(self, K=5):
+    def cluster_data(self, K=5, unique=True):
         cluster = Cluster()
         self.X_pca, pca = cluster.get_pca(self.X, self.Y)
         self.X_pca_clusters, self.kmeans_pca = cluster.get_clusters(self.X_pca, K)
-        # plot_pca_clusters(X_pca, kmeans_pca)
-        # plot_cluster_histogram(X_pca_clusters, K)
+
+        if unique:
+            to_remove_idx = Cluster.find_duplicates(self.X_pca)
+            X_pca_uniq = deepcopy(self.X_pca)
+            X_pca_uniq = [u for u not in X_pca_uniq ]
+            np.delete(X_pca_uniq[to_remove_idx])
+
+
+        # # count the number of duplicates in each cluster
+        # X_idx = Cluster.to_cluster_idx(range(K), X_pca_clusters.labels_)
+
+        # for id in range(K):
+        # total_items = len(X_idx[id])
+        # dupe_count = len(set(X_idx[id]) & set(to_remove))
+        # print("{}: {:.2f}% {}/{}".format(id, 100*dupe_count/total_items, dupe_count, total_items))
 
         X_d, y_d = cluster.to_clusters_dict(self.X, self.Y, self.X_pca_clusters, K)
         self.partition_on_clusters(X_d, y_d, range(K))

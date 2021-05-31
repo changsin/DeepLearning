@@ -1,10 +1,13 @@
 import numpy as np
+import logging
 
 from matplotlib import pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from scipy.spatial.distance import cdist
+
+logger = logging.getLogger(__name__)
 
 
 class Cluster():
@@ -92,5 +95,5 @@ class Cluster():
             if len(d) > 1:
                 for id in range(1, len(d)):
                     to_remove.add(d[id])
-        print("Found {} duplicates".format(len(to_remove)))
+        logger.info("Found {} duplicates".format(len(to_remove)))
         return to_remove
