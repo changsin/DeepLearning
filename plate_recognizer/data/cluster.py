@@ -54,7 +54,7 @@ class Cluster():
         given X_clusters, put X & y into the correct clusters
         and return the dictionary
         """
-        X_cluster_idx = to_cluster_idx(range(K), X_clusters.labels_)
+        X_cluster_idx = self.to_cluster_idx(range(K), X_clusters.labels_)
 
         X_dict = {}
         y_dict = {}
