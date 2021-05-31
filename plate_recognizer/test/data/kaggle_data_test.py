@@ -6,6 +6,7 @@ if find_spec("plate_recognizer") is None:
     sys.path.append('../..')
 
 from data.kaggle_data import KaggleData
+from data.cluster import Cluster
 
 def test_kaggle_data():
     dataset = KaggleData()
@@ -14,6 +15,11 @@ def test_kaggle_data():
 
     assert dataset.X is not None
     assert dataset.Y is not None
+
+def test_cluster():
+    cluster = Cluster()
+
+    assert cluster is not None
 
 if __name__ == '__main__':
     pytest.main()
