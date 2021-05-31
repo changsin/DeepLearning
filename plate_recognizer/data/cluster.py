@@ -70,15 +70,18 @@ class Cluster():
         return X_dict, y_dict
 
     @staticmethod
-    def get_merged_data(clusters_d):
-        merged = []
-        for cluster_id, cluster in clusters_d.items():
-            if cluster_id == 0:
-                merged = cluster
-            else:
-                merged = np.vstack((merged, cluster))
+    def get_merged_data(clusters_d, id=-1):
+        if id != -1:
+            return clusters_d[id]
+        else:
+            merged = []
+            for cluster_id, cluster in clusters_d.items():
+                if cluster_id == 0:
+                    merged = cluster
+                else:
+                    merged = np.vstack((merged, cluster))
 
-        return merged
+            return merged
 
     @staticmethod
     def find_duplicates(X_train_pca):

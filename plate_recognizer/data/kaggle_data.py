@@ -6,11 +6,15 @@ from sklearn.model_selection import train_test_split
 
 from FSDL.plate_recognizer.data.cluster import Cluster
 from FSDL.plate_recognizer.data.base_data_module import DataType
+from FSDL.plate_recognizer.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 import argparse
 import cv2
 import glob
 import json
+import logging
 import numpy as np
 import os
 
@@ -23,6 +27,7 @@ import os
 
 IMAGE_SIZE = 224
 DATA_ROOT = "/content/drive/MyDrive/data/Kaggle_license_plates"
+
 
 # class KaggleData(BaseDataModule):
 class KaggleData():
@@ -47,20 +52,19 @@ class KaggleData():
         self.X_test_d = dict()
         self.Y_test_d = dict()
 
-        self.X_train = None
-        self.Y_train = None
-        self.X_val = None
-        self.Y_val = None
-        self.X_test = None
-        self.Y_test = None
-
-    def get_data(self, data_type=DataType.Train):
+    def get_data(self, data_type=DataType.Train, cluster_id=-1):
         if data_type == DataType.Val:
-            return self.X_val, self.Y_val
+            X_val = Cluster.get_merged_data(self.X_val_d, id)
+            Y_val = Cluster.get_merged_data(self.Y_val_d, id)
+            return X_val, Y_val
         elif data_type == DataType.Test:
-            return self.X_test, self.Y_test
+            X_test = Cluster.get_merged_data(self.X_test_d, id)
+            Y_test = Cluster.get_merged_data(self.Y_test_d, id)
+            return X_test, Y_test
         else:
-            return self.X_train, self.Y_train
+            X_train = Cluster.get_merged_data(self.X_train_d, id)
+            Y_train = Cluster.get_merged_data(self.Y_train_d, id)
+            return X_train, Y_train
 
     def prepare_data(self, *args, **kwargs) -> None:
         self.X_raw = self.load_images(self.X_path)
@@ -72,31 +76,20 @@ class KaggleData():
         self.X_pca_reduced, pca = cluster.get_pca_reduced(self.X)
         self.X_pca_clusters, self.kmeans_pca = cluster.get_clusters(self.X_pca_reduced, K)
 
-        # if unique:
-        #    to_remove_idx = Cluster.find_duplicates(self.X_pca_reduced)
-        #    X_pca_uniq = deepcopy(self.X_pca_reduced)
-        #    X_pca_uniq = [u for u not in X_pca_uniq ]
-        #    np.delete(X_pca_uniq[to_remove_idx])
+        if unique:
+            # Detect and remove duplicates
+            to_remove_idx = Cluster.find_duplicates(self.X_pca_reduced)
+            logger.info("Removing duplicates {}".format(len(to_remove_idx)))
+            unique_idx = [id not in to_remove_idx for id in range(len(self.X_pca_reduced))]
 
-        # # count the number of duplicates in each cluster
-        # X_idx = Cluster.to_cluster_idx(range(K), X_pca_clusters.labels_)
+            self.X_pca_reduced = self.X_pca_reduced[unique_idx]
+            logger.info("Using only {}".format(len(self.X_pca_reduced)))
 
-        # for id in range(K):
-        # total_items = len(X_idx[id])
-        # dupe_count = len(set(X_idx[id]) & set(to_remove))
-        # print("{}: {:.2f}% {}/{}".format(id, 100*dupe_count/total_items, dupe_count, total_items))
+            # Recluster on the unique data points
+            self.X_pca_clusters, self.kmeans_pca = cluster.get_clusters(self.X_pca_reduced, K)
 
         X_d, y_d = cluster.to_clusters_dict(self.X, self.Y, self.X_pca_clusters, K)
         self.partition_on_clusters(X_d, y_d, range(K))
-
-        self.X_train = Cluster.get_merged_data(self.X_train_d)
-        self.Y_train = Cluster.get_merged_data(self.Y_train_d)
-        self.X_val = Cluster.get_merged_data(self.X_val_d)
-        self.Y_val = Cluster.get_merged_data(self.Y_val_d)
-        self.X_test = Cluster.get_merged_data(self.X_test_d)
-        self.Y_test = Cluster.get_merged_data(self.Y_test_d)
-
-    # def setup(self, stage=None) -> None:
 
     def to_json(self, path, data):
         """
