@@ -37,7 +37,7 @@ def get_logger(mod_name):
     # To print now without microsecond, space and semicolon
     nowstr = str(now.replace(microsecond=0)).replace(" ", "-").replace(":", "-")
 
-    file_handler = logging.FileHandler(get_log_path() + 'watts-' + nowstr + '.log', encoding='utf-8')
+    file_handler = logging.FileHandler(get_log_path() + 'fsdl-' + nowstr + '.log', encoding='utf-8')
     file_handler.setLevel(logging.INFO)
 
     # create a logging format

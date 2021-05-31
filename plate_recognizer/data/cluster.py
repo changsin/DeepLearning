@@ -1,5 +1,4 @@
 import numpy as np
-import logging
 
 from matplotlib import pyplot as plt
 from sklearn.cluster import KMeans
@@ -7,7 +6,9 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from scipy.spatial.distance import cdist
 
-logger = logging.getLogger(__name__)
+from FSDL.plate_recognizer.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 class Cluster():

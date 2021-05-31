@@ -3,18 +3,19 @@
 from pathlib import Path
 from typing import Collection, Dict, Optional, Tuple, Union
 from enum import Enum
-
-from FSDL.plate_recognizer.utils import utils
 from torch.utils.data import ConcatDataset, DataLoader
 
+from FSDL.plate_recognizer.utils import utils
+from FSDL.plate_recognizer.utils.logger import get_logger
+
+
 import argparse
-import logging
 # import pytorch_lightning as pl
 
 BATCH_SIZE = 16
 NUM_WORKERS = 0
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def load_and_print_info(data_module_class) -> None:

@@ -1,11 +1,12 @@
 
-import logging
 import wandb
 import numpy as np
 
 from FSDL.plate_recognizer.data.base_data_module import DataType
+from FSDL.plate_recognizer.utils.logger import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
+
 
 class Trainer():
     def __init__(self, model):
