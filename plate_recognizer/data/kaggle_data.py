@@ -70,7 +70,7 @@ class KaggleData():
     def cluster_data(self, K=5, unique=True):
         cluster = Cluster()
         self.X_pca_reduced, pca = cluster.get_pca_reduced(self.X)
-        self.X_pca_clusters, self.kmeans_pca = cluster.get_clusters(, K)
+        self.X_pca_clusters, self.kmeans_pca = cluster.get_clusters(self.X_pca_reduced, K)
 
         # if unique:
         #    to_remove_idx = Cluster.find_duplicates(self.X_pca_reduced)
