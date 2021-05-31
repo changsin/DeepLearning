@@ -36,7 +36,7 @@ class KaggleData():
         self.X = None
         self.Y = None
 
-        self.X_pca = None
+        self.X_pca_reduced = None
         self.X_pca_clusters = None
         self.kmeans_pca = None
 
@@ -69,15 +69,14 @@ class KaggleData():
 
     def cluster_data(self, K=5, unique=True):
         cluster = Cluster()
-        self.X_pca, pca = cluster.get_pca(self.X, self.Y)
-        self.X_pca_clusters, self.kmeans_pca = cluster.get_clusters(self.X_pca, K)
+        self.X_pca_reduced, pca = cluster.get_pca_reduced(self.X)
+        self.X_pca_clusters, self.kmeans_pca = cluster.get_clusters(, K)
 
-        if unique:
-            to_remove_idx = Cluster.find_duplicates(self.X_pca)
-            X_pca_uniq = deepcopy(self.X_pca)
-            X_pca_uniq = [u for u not in X_pca_uniq ]
-            np.delete(X_pca_uniq[to_remove_idx])
-
+        # if unique:
+        #    to_remove_idx = Cluster.find_duplicates(self.X_pca_reduced)
+        #    X_pca_uniq = deepcopy(self.X_pca_reduced)
+        #    X_pca_uniq = [u for u not in X_pca_uniq ]
+        #    np.delete(X_pca_uniq[to_remove_idx])
 
         # # count the number of duplicates in each cluster
         # X_idx = Cluster.to_cluster_idx(range(K), X_pca_clusters.labels_)

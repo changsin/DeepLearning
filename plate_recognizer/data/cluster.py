@@ -14,17 +14,17 @@ class Cluster():
     def __init__(self, dimensions=2):
         self.dimensions = dimensions
 
-    def get_pca(self, X_train, y_train):
+    def get_pca_reduced(self, X_train):
         X_train_flatten = X_train.reshape(X_train.shape[0], -1)
         pca = PCA(self.dimensions)
 
-        X_train_pca = pca.fit_transform(X_train_flatten)
+        X_train_pca_reduced = pca.fit_transform(X_train_flatten)
 
-        return X_train_pca, pca
+        return X_train_pca_reduced, pca
     
-    def get_clusters(self, X_train_pca, K):
+    def get_clusters(self, X_train_pca_reduced, K):
         kmeans = KMeans(n_clusters=K, random_state=0)
-        X_train_pca_clusters = kmeans.fit(X_train_pca)
+        X_train_pca_clusters = kmeans.fit(X_train_pca_reduced)
 
         return X_train_pca_clusters, kmeans
 
