@@ -44,11 +44,11 @@ class KaggleData():
         self.Y_test_d = dict()
 
         self.X_train = None
-        self.Y_train None
+        self.Y_train = None
         self.X_val = None
-        self.Y_val None
+        self.Y_val = None
         self.X_test = None
-        self.Y_test None
+        self.Y_test = None
 
     def get_data(data_type=DataType.Train):
         if data_type == DataType.Val:
