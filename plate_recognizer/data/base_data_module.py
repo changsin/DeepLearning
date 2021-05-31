@@ -9,7 +9,7 @@ from FSDL.plate_recognizer import util
 from torch.utils.data import ConcatDataset, DataLoader
 
 import argparse
-import pytorch_lightning as pl
+# import pytorch_lightning as pl
 
 BATCH_SIZE = 16
 NUM_WORKERS = 0
@@ -45,80 +45,80 @@ class DataType(Enum):
     Test = 3
 
 
-class BaseDataModule(pl.LightningDataModule):
-    """
-    Base DataModule.
-    Learn more at https://pytorch-lightning.readthedocs.io/en/stable/extensions/datamodules.html
-    """
-    def __init__(self, args: argparse.Namespace = None) -> None:
-        super().__init__()
-        self.args = vars(args) if args is not None else {}
-        self.batch_size = self.args.get("batch_size", BATCH_SIZE)
-        self.num_workers = self.args.get("num_workers", NUM_WORKERS)
+# class BaseDataModule(pl.LightningDataModule):
+#     """
+#     Base DataModule.
+#     Learn more at https://pytorch-lightning.readthedocs.io/en/stable/extensions/datamodules.html
+#     """
+#     def __init__(self, args: argparse.Namespace = None) -> None:
+#         super().__init__()
+#         self.args = vars(args) if args is not None else {}
+#         self.batch_size = self.args.get("batch_size", BATCH_SIZE)
+#         self.num_workers = self.args.get("num_workers", NUM_WORKERS)
 
-        self.on_gpu = isinstance(self.args.get("gpus", None), (str, int))
+#         self.on_gpu = isinstance(self.args.get("gpus", None), (str, int))
 
-        # Make sure to set the variables below in subclasses
-        self.dims: Tuple[int, ...]
-        self.output_dims: Tuple[int, ...]
-        self.mapping: Collection
-        self.data_train: Union[BaseDataset, ConcatDataset]
-        self.data_val: Union[BaseDataset, ConcatDataset]
-        self.data_test: Union[BaseDataset, ConcatDataset]
+#         # Make sure to set the variables below in subclasses
+#         self.dims: Tuple[int, ...]
+#         self.output_dims: Tuple[int, ...]
+#         self.mapping: Collection
+#         self.data_train: Union[BaseDataset, ConcatDataset]
+#         self.data_val: Union[BaseDataset, ConcatDataset]
+#         self.data_test: Union[BaseDataset, ConcatDataset]
 
-    @classmethod
-    def data_dirname(cls):
-        return Path(__file__).resolve().parents[3] / "data"
+#     @classmethod
+#     def data_dirname(cls):
+#         return Path(__file__).resolve().parents[3] / "data"
 
-    @staticmethod
-    def add_to_argparse(parser):
-        parser.add_argument(
-            "--batch_size", type=int, default=BATCH_SIZE, help="Number of examples to operate on per forward step."
-        )
-        parser.add_argument(
-            "--num_workers", type=int, default=NUM_WORKERS, help="Number of additional processes to load data."
-        )
-        return parser
+#     @staticmethod
+#     def add_to_argparse(parser):
+#         parser.add_argument(
+#             "--batch_size", type=int, default=BATCH_SIZE, help="Number of examples to operate on per forward step."
+#         )
+#         parser.add_argument(
+#             "--num_workers", type=int, default=NUM_WORKERS, help="Number of additional processes to load data."
+#         )
+#         return parser
 
-    def config(self):
-        """Return important settings of the dataset, which will be passed to instantiate models."""
-        return {"input_dims": self.dims, "output_dims": self.output_dims, "mapping": self.mapping}
+#     def config(self):
+#         """Return important settings of the dataset, which will be passed to instantiate models."""
+#         return {"input_dims": self.dims, "output_dims": self.output_dims, "mapping": self.mapping}
 
-    def prepare_data(self, *args, **kwargs) -> None:
-        """
-        Use this method to do things that might write to disk or that need to be done only from a single GPU
-        in distributed settings (so don't set state `self.x = y`).
-        """
+#     def prepare_data(self, *args, **kwargs) -> None:
+#         """
+#         Use this method to do things that might write to disk or that need to be done only from a single GPU
+#         in distributed settings (so don't set state `self.x = y`).
+#         """
 
-    def setup(self, stage: Optional[str] = None) -> None:
-        """
-        Split into train, val, test, and set dims.
-        Should assign `torch Dataset` objects to self.data_train, self.data_val, and optionally self.data_test.
-        """
+#     def setup(self, stage: Optional[str] = None) -> None:
+#         """
+#         Split into train, val, test, and set dims.
+#         Should assign `torch Dataset` objects to self.data_train, self.data_val, and optionally self.data_test.
+#         """
 
-    def train_dataloader(self):
-        return DataLoader(
-            self.data_train,
-            shuffle=True,
-            batch_size=self.batch_size,
-            num_workers=self.num_workers,
-            pin_memory=self.on_gpu,
-        )
+#     def train_dataloader(self):
+#         return DataLoader(
+#             self.data_train,
+#             shuffle=True,
+#             batch_size=self.batch_size,
+#             num_workers=self.num_workers,
+#             pin_memory=self.on_gpu,
+#         )
 
-    def val_dataloader(self):
-        return DataLoader(
-            self.data_val,
-            shuffle=False,
-            batch_size=self.batch_size,
-            num_workers=self.num_workers,
-            pin_memory=self.on_gpu,
-        )
+#     def val_dataloader(self):
+#         return DataLoader(
+#             self.data_val,
+#             shuffle=False,
+#             batch_size=self.batch_size,
+#             num_workers=self.num_workers,
+#             pin_memory=self.on_gpu,
+#         )
 
-    def test_dataloader(self):
-        return DataLoader(
-            self.data_test,
-            shuffle=False,
-            batch_size=self.batch_size,
-            num_workers=self.num_workers,
-            pin_memory=self.on_gpu,
-        )
+#     def test_dataloader(self):
+#         return DataLoader(
+#             self.data_test,
+#             shuffle=False,
+#             batch_size=self.batch_size,
+#             num_workers=self.num_workers,
+#             pin_memory=self.on_gpu,
+#         )
