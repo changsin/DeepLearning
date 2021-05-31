@@ -31,6 +31,8 @@ class KaggleData():
         self.X = None
         self.Y = None
 
+    def get_data()
+
     def prepare_data(self, *args, **kwargs) -> None:
         self.X_raw = self.load_images(DATA_ROOT + "/images/")
         self.Y_raw = self.load_labels(DATA_ROOT + "/annotations.json")
