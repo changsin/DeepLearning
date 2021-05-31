@@ -31,10 +31,10 @@ def average_sample_preds(y_sample_preds):
         averages.append([np.mean(y_pred[:, i]) for i in range(y_pred.shape[1])])
     return np.array(averages)
 
-def predict_on_cluster(self, X_test, y_test, is_plot_predictions=False, iterations=50):
+def predict_on_cluster(model, X_test, y_test, is_plot_predictions=False, iterations=50):
     test_accuracy = 0
-    test_loss, test_accuracy = self.model.evaluate(X_test, y_test, steps=1)
-    y_preds = self.sample_predictions(X_test, iterations=iterations)
+    test_loss, test_accuracy = model.evaluate(X_test, y_test, steps=1)
+    y_preds = sample_predictions(X_test, iterations=iterations)
 
     preds_avg = average_sample_preds(y_preds)
     rectified_y_test = np.array([to_rect(y*IMAGE_SIZE) for y in y_test])
