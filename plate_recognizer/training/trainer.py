@@ -1,7 +1,23 @@
 
+import logging
+import wandb
+
+
+
+logger = logging.getLogger(__name__)
 
 class Trainer():
-    def train(model, dataset, epochs=50, batch_size=16, is_plot_predictions=False):
+    def __init__(self, model):
+        self.model = model
+    
+        wandb.init(project="UFPR-cnn",
+                config={
+                    "batch_size": 16,
+                    "learning_rate": 0.01,
+                    "dataset": "UFPR-cnn",
+                })
+
+    def train(self, dataset, epochs=50, batch_size=16, is_plot_predictions=False):
         train_history = model.fit(x=dataset.get_x_train(), y=dataset.get_y_train(),
                                     validation_data=(dataset.get_x_val(), dataset.get_y_val()),
                                     epochs=epochs, batch_size=batch_size, verbose=1,
@@ -9,11 +25,11 @@ class Trainer():
                                     save_model=False)])
         # Test
         scores = model.evaluate(X_test, y_test, verbose=0)
-        print("Score : %.2f%%" % (scores[1]*100))
+        logger.info("Score : %.2f%%" % (scores[1]*100))
 
         test_loss, test_accuracy = model.evaluate(dataset.get_x_test(), dataset.get_y_test(), steps=int(100))
 
-        print("Test results \n Loss:",test_loss,'\n Accuracy',test_accuracy)
+        logger.info("Test results \n Loss:",test_loss,'\n Accuracy',test_accuracy)
 
         y_preds = self.sample_predictions(model, dataset.get_x_test(), iterations=1)
         # y_preds = model.predict(X_test)
@@ -33,7 +49,7 @@ class Trainer():
         return model
     
     # run predictions many times to get the distributions
-    def sample_predictions(model, X, iterations=100):
+    def sample_predictions(self, model, X, iterations=100):
         predicted = []
         for _ in range(iterations):
             predicted.append(model(X).numpy())
