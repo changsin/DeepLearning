@@ -18,9 +18,9 @@ class Trainer():
                 })
 
     def train(self, dataset, epochs=50, batch_size=16, is_plot_predictions=False):
-        X_train, y_train = dataset.get_data(DataType.Train)
-        X_val, y_val = dataset.get_data(DataType.Val)
-        X_test, y_test = dataset.get_data(DataType.Test)
+        X_train, Y_train = dataset.get_data(DataType.Train)
+        X_val, Y_val = dataset.get_data(DataType.Val)
+        X_test, Y_test = dataset.get_data(DataType.Test)
 
         train_history = self.model.fit(x=X_train, y=Y_train,
                                     validation_data=(X_val, Y_val),
@@ -28,19 +28,15 @@ class Trainer():
                                     callbacks=[wandb.keras.WandbCallback(data_type="image",
                                     save_model=False)])
         # Test
-        scores = self.model.evaluate(X_test, y_test, verbose=0)
+        scores = self.model.evaluate(X_test, Y_test, verbose=0)
         logger.info("Score : %.2f%%" % (scores[1]*100))
 
         test_loss, test_accuracy = self.model.evaluate(X_test, Y_test, steps=int(100))
 
-        logger.info("Test results \n Loss:",test_loss,'\n Accuracy',test_accuracy)
+        logger.info("Test results \n Loss:", test_loss, '\n Accuracy', test_accuracy)
 
         y_preds = self.sample_predictions(model, X_test, iterations=1)
-        # y_preds = model.predict(X_test)
 
-        # # TODO:
-        # # Hack to fix erroneous predictions
-        # y_preds = fix_predictions(y_preds)
         if is_plot_predictions:
             plot_predictions(X_test, Y_test, y_preds)
 
