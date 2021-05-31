@@ -1,3 +1,5 @@
+import numpy as np
+
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from scipy.spatial.distance import cdist
