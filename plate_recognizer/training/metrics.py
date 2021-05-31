@@ -26,7 +26,7 @@ def create_pred_boxes(y_preds, scores):
   pred_boxes = dict()
   for id in range(len(y_preds)):
     pred_boxes[str(id)] =  {
-        "boxes": [y_preds[id].tolist()],
+        "boxes": [y_preds[id]],
         "scores": list(scores[id])
     }
   return pred_boxes
