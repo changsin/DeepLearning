@@ -1,6 +1,7 @@
 """Kaggle DataModule"""
 from lxml import etree
 from matplotlib import pyplot as plt
+from cluster import Cluster
 
 import argparse
 import cv2
@@ -31,12 +32,53 @@ class KaggleData():
         self.X = None
         self.Y = None
 
-    def get_data()
+        self.X_pca = None
+        self.X_pca_clusters = None
+        self.kmeans_pca = None
+
+        self.X_train_d = dict()
+        self.Y_train_d = dict()
+        self.X_val_d = dict()
+        self.Y_val_d = dict()
+        self.X_test_d = dict()
+        self.Y_test_d = dict()
+
+        self.X_train = None
+        self.Y_train None
+        self.X_val = None
+        self.Y_val None
+        self.X_test = None
+        self.Y_test None
+
+    def get_data(data_type=DataType.Train):
+        if data_type == DataType.Val:
+            return self.X_val, self.Y_val
+        elif data_type == DataType.Test:
+            return self.X_test, self.Y_test
+        else:
+            return self.X_train, self.Y_train
 
     def prepare_data(self, *args, **kwargs) -> None:
         self.X_raw = self.load_images(DATA_ROOT + "/images/")
         self.Y_raw = self.load_labels(DATA_ROOT + "/annotations.json")
         self.X, self.Y = self.normalize(self.X_raw, self.Y_raw)
+
+    def cluster_data(self, K=5):
+        cluster = Cluster()
+        self.X_pca, pca = cluster.get_pca(self.X, self.Y)
+        self.X_pca_clusters, self.kmeans_pca = cluster.get_clusters(X_pca, K)
+        # plot_pca_clusters(X_pca, kmeans_pca)
+        # plot_cluster_histogram(X_pca_clusters, K)
+
+        X_d, y_d = cluster.to_clusters_dict(self.X, self.Y, X_pca_clusters, K)
+        self.partition_on_clusters(X_d, y_d, range(K))
+
+        self.X_train = self.get_merged_data(self.X_train_d)
+        self.Y_train = self.get_merged_data(self.Y_train_d)
+        self.X_val = self.get_merged_data(self.X_val_d)
+        self.Y_val = self.get_merged_data(self.Y_val_d)
+        self.X_test = self.get_merged_data(self.X_test_d)
+        self.Y_test = self.get_merged_data(self.Y_test_d)
 
     # def setup(self, stage=None) -> None:
 
@@ -149,6 +191,33 @@ class KaggleData():
         y = y / IMAGE_SIZE
 
         return X, y
+
+    def partition_on_clusters(self, X_d, y_d, bins, val_size=0.1, test_size=0.2):
+        # for each cluster reserve test_size portion for test data
+        for id in bins:
+            Xt_train, Xt_test, yt_train, yt_test = \
+            train_test_split(X_d[id], y_d[id], test_size=test_size, shuffle=False)
+            Xt_train, Xt_val, yt_train, yt_val = \
+            train_test_split(Xt_train, yt_train, test_size=val_size, shuffle=False)
+
+            self.X_train_d[id] = Xt_train
+            self.Y_train_d[id] = yt_train
+
+            self.X_val_d[id] = Xt_val
+            self.Y_val_d[id] = yt_val
+
+            self.X_test_d[id] = Xt_test
+            self.Y_test_d[id] = yt_test
+
+    def get_merged_data(self, clusters_d):
+        merged = []
+        for cluster_id, cluster in clusters_d.items():
+            if cluster_id == 0:
+            merged = cluster
+            else:
+            merged = np.vstack((merged, cluster))
+
+        return merged
 
 # if __name__ == "__main__":
     # load_and_print_info(MNIST)

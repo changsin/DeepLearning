@@ -10,10 +10,8 @@ from torch.utils.data import ConcatDataset, DataLoader
 import argparse
 import pytorch_lightning as pl
 
-class Move(Enum):
-    Train = 1
-    Val = 2
-    Test = 3
+BATCH_SIZE = 16
+NUM_WORKERS = 0
 
 def load_and_print_info(data_module_class) -> None:
     """Load EMNISTLines and print info."""
@@ -39,8 +37,12 @@ def _download_raw_dataset(metadata: Dict, dl_dirname: Path) -> Path:
         raise ValueError("Downloaded data file SHA-256 does not match that listed in metadata document.")
     return filename
 
-BATCH_SIZE = 16
-NUM_WORKERS = 0
+
+class DataType(Enum):
+    Train = 1
+    Val = 2
+    Test = 3
+
 
 class BaseDataModule(pl.LightningDataModule):
     """

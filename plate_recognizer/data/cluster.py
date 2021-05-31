@@ -82,31 +82,3 @@ class Cluster():
                     to_remove.add(d[id])
         print("Found {} duplicates".format(len(to_remove)))
         return to_remove
-
-    def partition_on_clusters(self, X_d, y_d, bins, val_size=0.1, test_size=0.2):
-        X_train_d = dict()
-        y_train_d = dict()
-        X_val_d = dict()
-        y_val_d = dict()
-        X_test_d = dict()
-        y_test_d = dict()
-
-        # for each cluster reserve test_size portion for test data
-        for id in bins:
-            Xt_train, Xt_test, yt_train, yt_test = \
-            train_test_split(X_d[id], y_d[id], test_size=0.2, shuffle=False)
-            Xt_train, Xt_val, yt_train, yt_val = \
-            train_test_split(Xt_train, yt_train, test_size=0.1, shuffle=False)
-
-            X_train_d[id] = Xt_train
-            y_train_d[id] = yt_train
-
-            X_val_d[id] = Xt_val
-            y_val_d[id] = yt_val
-
-            X_test_d[id] = Xt_test
-            y_test_d[id] = yt_test
-
-        return X_train_d, y_train_d, \
-                X_val_d, y_val_d, \
-                X_test_d, y_test_d

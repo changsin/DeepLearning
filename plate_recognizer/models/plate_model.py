@@ -7,6 +7,8 @@ import tensorflow as tf
 import tensorflow_probability as tfp
 dist = tfp.distributions
 
+IMAGE_SIZE = 224
+
 class PlateModel():
     def __init__(self, use_probability=True):
         self.use_probability = use_probability
