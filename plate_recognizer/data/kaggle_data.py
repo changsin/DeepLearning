@@ -199,11 +199,11 @@ class KaggleData():
         # for each cluster reserve test_size portion for test data
         # just partition the idx, not the actual data as the idx can be handy
         for id in bins:
-            Xt_train_idx, Xt_test_idx, yt_train_idx, yt_test_idx = \
-            train_test_split(cluster_idx[id], cluster_idx[id], test_size=test_size, shuffle=False)
-            Xt_train_idx, Xt_val_idx, yt_train_idx, yt_val_idx = \
-            train_test_split(Xt_train, yt_train, test_size=val_size, shuffle=False)
+            train_idx, test_idx, _, _ = \
+                train_test_split(cluster_idx[id], cluster_idx[id], test_size=test_size, shuffle=False)
+            train_idx, val_idx, _, _ = \
+                train_test_split(train_idx, train_idx, test_size=val_size, shuffle=False)
 
-            self.train_idx[id] = Xt_train_idx
-            self.val_idx[id] = Xt_val_idx
-            self.test_idx[id] = Xt_test_idx
+            self.train_idx[id] = train_idx
+            self.val_idx[id] = val_idx
+            self.test_idx[id] = test_idx
