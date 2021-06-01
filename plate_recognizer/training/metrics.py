@@ -1,6 +1,10 @@
+import numpy as np
+
 from copy import deepcopy
 
-import numpy as np
+from FSDL.plate_recognizer.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 IMAGE_SIZE = 224
 
@@ -20,6 +24,7 @@ def create_gt_boxes(y_test):
   gt_boxes = dict()
   for id in range(len(y_test)):
     gt_boxes[str(id)] = [list(y_test[id])]
+
   return gt_boxes
 
 def create_pred_boxes(y_preds, scores):
@@ -29,6 +34,7 @@ def create_pred_boxes(y_preds, scores):
         "boxes": [y_preds[id]],
         "scores": list(scores[id])
     }
+
   return pred_boxes
 
 # NB: the values are scaled down to 0..1
@@ -51,15 +57,15 @@ def calculate_map(y_test, y_preds, threshold=0.5):
   preds_boxes = create_pred_boxes(y_preds_scaled, scores)
 
   map = get_avg_precision_at_iou(gt_boxes=gt_boxes, pred_bb=preds_boxes)
-  # print("mAP:{:.2}".format(map['avg_prec']))
+  logger.info("mAP:{:.2}".format(map['avg_prec']))
   return map
 
 def get_avg_precision_at_iou(gt_boxes, pred_bb, iou_thr=0.5):
     model_scores = get_model_scores(pred_bb)
+    # Sort the predicted boxes in descending order (lowest scoring boxes first):
     sorted_model_scores= sorted(model_scores.keys())
-# Sort the predicted boxes in descending order (lowest scoring boxes first):
+
     for img_id in pred_bb.keys():
-        
         arg_sort = np.argsort(pred_bb[img_id]['scores'])
         pred_bb[img_id]['scores'] = np.array(pred_bb[img_id]['scores'])[arg_sort].tolist()
         pred_bb[img_id]['boxes'] = np.array(pred_bb[img_id]['boxes'])[arg_sort].tolist()
@@ -70,9 +76,10 @@ def get_avg_precision_at_iou(gt_boxes, pred_bb, iou_thr=0.5):
     recalls = []
     model_thrs = []
     img_results = {}
-# Loop over model score thresholds and calculate precision, recall
+    
+    # Loop over model score thresholds and calculate precision, recall
     for ithr, model_score_thr in enumerate(sorted_model_scores[:-1]):
-            # On first iteration, define img_results for the first time:
+        # On first iteration, define img_results for the first time:
         # print("Mode score : ", model_score_thr)
         img_ids = gt_boxes.keys() if ithr == 0 else model_scores[model_score_thr]
     
@@ -89,12 +96,13 @@ def get_avg_precision_at_iou(gt_boxes, pred_bb, iou_thr=0.5):
             # Remove boxes, scores of lower than threshold scores:
             pred_boxes_pruned[img_id]['scores']= pred_boxes_pruned[img_id]['scores'][start_idx:]
             pred_boxes_pruned[img_id]['boxes']= pred_boxes_pruned[img_id]['boxes'][start_idx:]
-# Recalculate image results for this image
+
+            # Recalculate image results for this image
             # print(img_id)
             img_results[img_id] = get_single_image_results(gt_boxes_img,
                                       pred_boxes_pruned[img_id]['boxes'],
                                       iou_thr=0.5)
-# calculate precision and recall
+        # calculate precision and recall
         prec, rec = calc_precision_recall(img_results)
         precisions.append(prec)
         recalls.append(rec)
@@ -115,7 +123,9 @@ def get_avg_precision_at_iou(gt_boxes, pred_bb, iou_thr=0.5):
         except ValueError:
             prec=0.0
         prec_at_rec.append(prec)
+
     avg_prec = np.mean(prec_at_rec) 
+
     return {
         'avg_prec': avg_prec,
         'precisions': precisions,

@@ -41,7 +41,6 @@ def plot_pca(X_train_pca, y_train):
     plt.scatter(X_train_pca[:, 0], X_train_pca[:, 1], c=y_train, cmap="Paired")
     plt.colorbar()
 
-
 def plot_cluster_histogram(X_clusters, K):
     histo_x, bins = np.histogram(X_clusters.labels_, bins=range(K + 1))
     plt.bar(bins[:-1], histo_x, align='center')
@@ -166,13 +165,13 @@ def plot_predictions(X, y_gt, y_preds):
     # plt.title("mean std: {:0.2f}".format(mean_stds[sample_ids[i]]))
     plt.imshow(np.clip(image, 0, 1))
 
-def plot_stats(stats, types, titles, K=5):
+def plot_stats(stats_data, types, titles, K=5):
     x_bar = np.arange(K)
     bar_width = .35
 
     fig = plt.figure(figsize=(20,40))
 
-    for i, stat in zip(range(len(stats)), stats):
+    for i, stat in zip(range(len(stats_data)), stats_data):
         ax = fig.add_subplot(10, 4, i+1)
         # plt.axis('off')
 
@@ -193,17 +192,17 @@ def plot_stats(stats, types, titles, K=5):
     fig.tight_layout()
 
 # plot line graph for comparing different noise level results
-def plot_stats_by_type(stats, x_bins, column, title, clusters=bins, merge=False):
+def plot_stats_by_type(stats_data, x_bins, column, title, clusters=bins, merge=False):
   fig = plt.figure(figsize=(20,40))
   ax = fig.add_subplot(10, 4, 1)
 
   if merge:
-    p = ax.plot(x_bins, [np.mean(run) for run in stats_noise[:, :, 1]], label='avg')
+    p = ax.plot(x_bins, [np.mean(run) for run in stats_data[:, :, 1]], label='avg')
   else:
     x_bins_len = len(x_bins)
     for cluster_id in range(len(clusters)):
-      p = ax.plot(x_bins, stats[:x_bins_len, :, column][:, cluster_id], label=cluster_id)
-    # p = ax.plot(noise_levels, stats[:bins, :, column][:, 0], color='green', label='0')
+      p = ax.plot(x_bins, stats_data[:x_bins_len, :, column][:, cluster_id], label=cluster_id)
+    # p = ax.plot(noise_levels, stats_data[:bins, :, column][:, 0], color='green', label='0')
 
   ax.set_title(title)
   ax.legend()
