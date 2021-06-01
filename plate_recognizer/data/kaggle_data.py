@@ -59,7 +59,7 @@ class KaggleData():
         else:
             idx = Cluster.get_merged_data(self.train_idx, cluster_id)
 
-        return X[idx], Y[idx]
+        return self.X[idx], self.Y[idx]
 
     def prepare_data(self, *args, **kwargs) -> None:
         self.X_raw = self.load_images(self.X_path)
