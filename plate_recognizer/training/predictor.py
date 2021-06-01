@@ -7,8 +7,6 @@ from FSDL.plate_recognizer.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
-IMAGE_SIZE = 224
-
 
 # run predictions many times to get the distributions
 def sample_predictions(model, X, iterations=50):
@@ -40,7 +38,7 @@ def predict_on_cluster(model, X_test, y_test, iterations=50):
     y_preds = sample_predictions(model, X_test, iterations=iterations)
     preds_avg = average_sample_preds(y_preds)
 
-    m_ap = metrics.calculate_map(y_test*IMAGE_SIZE, preds_avg*IMAGE_SIZE)
+    m_ap = metrics.calculate_map(y_test, preds_avg)
     stds = np.mean(np.std(y_preds, axis=1), axis=1)
 
     return y_preds, m_ap, np.mean(stds, axis=0), test_accuracy
