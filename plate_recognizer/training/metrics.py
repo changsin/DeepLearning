@@ -286,7 +286,10 @@ def get_single_image_results(gt_boxes, pred_boxes, iou_thr):
         fn = len(gt_boxes) - len(gt_match_idx)
     return {'true_positive': tp, 'false_positive': fp, 'false_negative': fn}
 
-def bb_iou(boxA, boxB):
+def bb_iou(y_pred, y_test):
+    boxA = to_rect(y_pred*IMAGE_SIZE)
+    boxB = to_rect(y_test*IMAGE_SIZE)
+
     # this method is borrowed from
     # https://www.pyimagesearch.com/2016/11/07/intersection-over-union-iou-for-object-detection/
     # determine the (x, y)-coordinates of the intersection rectangle
