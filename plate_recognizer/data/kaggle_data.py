@@ -41,30 +41,25 @@ class KaggleData():
         self.X = None
         self.Y = None
 
+        self.cluster = Cluster()
+
         self.X_pca_reduced = None
         self.X_pca_clusters = None
         self.kmeans_pca = None
 
-        self.X_train_d = dict()
-        self.Y_train_d = dict()
-        self.X_val_d = dict()
-        self.Y_val_d = dict()
-        self.X_test_d = dict()
-        self.Y_test_d = dict()
+        self.train_idx = dict()
+        self.val_idx = dict()
+        self.test_idx = dict()
 
     def get_data(self, data_type=DataType.Train, cluster_id=-1):
         if data_type == DataType.Val:
-            X_val = Cluster.get_merged_data(self.X_val_d, cluster_id)
-            Y_val = Cluster.get_merged_data(self.Y_val_d, cluster_id)
-            return X_val, Y_val
+            idx = Cluster.get_merged_data(self.val_idx, cluster_id)
         elif data_type == DataType.Test:
-            X_test = Cluster.get_merged_data(self.X_test_d, cluster_id)
-            Y_test = Cluster.get_merged_data(self.Y_test_d, cluster_id)
-            return X_test, Y_test
+            idx = Cluster.get_merged_data(self.test_idx, cluster_id)
         else:
-            X_train = Cluster.get_merged_data(self.X_train_d, cluster_id)
-            Y_train = Cluster.get_merged_data(self.Y_train_d, cluster_id)
-            return X_train, Y_train
+            idx = Cluster.get_merged_data(self.train_idx, cluster_id)
+
+        return X[idx], Y[idx]
 
     def prepare_data(self, *args, **kwargs) -> None:
         self.X_raw = self.load_images(self.X_path)
@@ -72,9 +67,8 @@ class KaggleData():
         self.X, self.Y = self.normalize(self.X_raw, self.Y_raw)
 
     def cluster_data(self, K=5, unique=True):
-        cluster = Cluster()
-        self.X_pca_reduced, pca = cluster.get_pca_reduced(self.X)
-        self.X_pca_clusters, self.kmeans_pca = cluster.get_clusters(self.X_pca_reduced, K)
+        self.X_pca_reduced, pca = self.cluster.get_pca_reduced(self.X)
+        self.X_pca_clusters, self.kmeans_pca = self.cluster.get_clusters(self.X_pca_reduced, K)
 
         if unique:
             # Detect and remove duplicates
@@ -86,10 +80,10 @@ class KaggleData():
             logger.info("Using only {}".format(len(self.X_pca_reduced)))
 
             # Recluster on the unique data points
-            self.X_pca_clusters, self.kmeans_pca = cluster.get_clusters(self.X_pca_reduced, K)
+            self.X_pca_clusters, self.kmeans_pca = self.cluster.get_clusters(self.X_pca_reduced, K)
 
-        X_d, y_d = cluster.to_clusters_dict(self.X, self.Y, self.X_pca_clusters, K)
-        self.partition_on_clusters(X_d, y_d, range(K))
+        cluster_idx = self.cluster.to_cluster_idx(self.X, self.Y, self.X_pca_clusters, K)
+        self.partition_on_clusters(cluster_idx, range(K))
 
     def to_json(self, path, data):
         """
@@ -201,19 +195,15 @@ class KaggleData():
 
         return X, y
 
-    def partition_on_clusters(self, X_d, y_d, bins, val_size=0.1, test_size=0.2):
+    def partition_on_clusters(self, cluster_idx, bins, val_size=0.1, test_size=0.2):
         # for each cluster reserve test_size portion for test data
+        # just partition the idx, not the actual data as the idx can be handy
         for id in bins:
-            Xt_train, Xt_test, yt_train, yt_test = \
-            train_test_split(X_d[id], y_d[id], test_size=test_size, shuffle=False)
-            Xt_train, Xt_val, yt_train, yt_val = \
+            Xt_train_idx, Xt_test_idx, yt_train_idx, yt_test_idx = \
+            train_test_split(cluster_idx[id], cluster_idx[id], test_size=test_size, shuffle=False)
+            Xt_train_idx, Xt_val_idx, yt_train_idx, yt_val_idx = \
             train_test_split(Xt_train, yt_train, test_size=val_size, shuffle=False)
 
-            self.X_train_d[id] = Xt_train
-            self.Y_train_d[id] = yt_train
-
-            self.X_val_d[id] = Xt_val
-            self.Y_val_d[id] = yt_val
-
-            self.X_test_d[id] = Xt_test
-            self.Y_test_d[id] = yt_test
+            self.train_idx[id] = Xt_train_idx
+            self.val_idx[id] = Xt_val_idx
+            self.test_idx[id] = Xt_test_idx
