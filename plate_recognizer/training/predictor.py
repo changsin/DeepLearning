@@ -45,13 +45,15 @@ def predict_on_cluster(model, X_test, y_test, is_plot_predictions=False, iterati
 
     return y_preds, m_ap, np.mean(stds, axis=0), test_accuracy
 
-def predict_on_models(dataset, bins, models):
+def predict_on_models(dataset, bins, models, iterations=50):
     stats = []
     for model in models:
         cluster_stats = []
         for cluster_id in bins:
             X_test, Y_test = dataset.get_data(data_type=DataType.Test, cluster_id=cluster_id)
-            y_preds, m_ap, std, accuracy = predict_on_cluster(model, X_test, Y_test)
+            y_preds, m_ap, std, accuracy = predict_on_cluster(model,
+                                                              X_test, Y_test,
+                                                              is_plot_predictions=False, iterations=iterations)
             logger.info("{} mAP: {:0.2f} std: {:0.2f} acc: {:0.2f}".format(cluster_id,
                                                                     m_ap['avg_prec'],
                                                                     std,
