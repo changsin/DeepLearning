@@ -49,10 +49,10 @@ def predict_on_models(dataset, bins, models):
     stats = []
     for model in models:
         cluster_stats = []
-        for clst_id in bins:
-            X_test, Y_test = dataset.get_data(data_type=DataType.Test, clst_id=clst_id)
+        for cluster_id in bins:
+            X_test, Y_test = dataset.get_data(data_type=DataType.Test, cluster_id=cluster_id)
             y_preds, m_ap, std, accuracy = predict_on_cluster(model, X_test, Y_test)
-            logger.info("{} mAP: {:0.2f} std: {:0.2f} acc: {:0.2f}".format(clst_id,
+            logger.info("{} mAP: {:0.2f} std: {:0.2f} acc: {:0.2f}".format(cluster_id,
                                                                     m_ap['avg_prec'],
                                                                     std,
                                                                     accuracy))
