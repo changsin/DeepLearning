@@ -40,7 +40,7 @@ class Trainer():
 
         logger.info("Test results \n Loss: {}\n Accuracy: {}".format(test_loss, test_accuracy))
 
-        y_preds = predictor.sample_predictions(X_test, iterations=1)
+        y_preds = predictor.sample_predictions(self.model, X_test, iterations=1)
 
         if is_plot_predictions:
             plot_predictions(X_test, Y_test, y_preds)
