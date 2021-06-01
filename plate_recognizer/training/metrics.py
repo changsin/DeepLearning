@@ -56,7 +56,7 @@ def calculate_map(y_test, y_preds, threshold=0.5):
   y_preds_scaled = [to_rect(y*IMAGE_SIZE) for y in y_preds]
 
   scores = [[bb_iou(y_test_scaled[id], y_preds_scaled[id])] for id in range(len(y_test_scaled))]
-  logger.info("scores: {}".format(score))
+  logger.info("scores: {}".format(scores))
 
   gt_boxes = create_gt_boxes(y_test_scaled)
   preds_boxes = create_pred_boxes(y_preds_scaled, scores)
