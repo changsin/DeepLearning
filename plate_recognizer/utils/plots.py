@@ -1,6 +1,8 @@
 import matplotlib.patches as patches
 import numpy as np
 
+import FSDL.plate_recognizer.training.predictor as predictor
+
 from matplotlib import pyplot as plt
 
 IMAGE_SIZE = 224
@@ -143,7 +145,7 @@ def plot_predictions(X, y_gt, y_preds):
   # The number of images for plotting is limited to 50
   end_id = len(y_gt) if len(y_gt) < 50 else 50
 
-  y_preds_avg = average_sample_preds(y_preds)
+  y_preds_avg = predictor.average_sample_preds(y_preds)
   stds = np.std(y_preds, axis=1)
   mean_stds = np.mean(stds, axis=1)
 
