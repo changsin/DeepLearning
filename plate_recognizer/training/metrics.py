@@ -51,7 +51,7 @@ def to_rect(y, image_size=IMAGE_SIZE):
 
     return int(y[0] - width/2), int(y[1] - height/2), int(y[0] + width/2), int(y[1] + height/2)
 
-def calculate_map(y_test, y_preds, threshold=0.5, image_size=IMAGE_SIZE):
+def calculate_map(y_test, y_preds, iou_threshold=0.5, image_size=IMAGE_SIZE):
   y_test_scaled = [to_rect(y*image_size) for y in y_test]
   y_preds_scaled = [to_rect(y*image_size) for y in y_preds]
 
@@ -61,7 +61,7 @@ def calculate_map(y_test, y_preds, threshold=0.5, image_size=IMAGE_SIZE):
   gt_boxes = create_gt_boxes(y_test_scaled)
   preds_boxes = create_pred_boxes(y_preds_scaled, scores)
 
-  map = get_avg_precision_at_iou(gt_boxes=gt_boxes, pred_bb=preds_boxes)
+  map = get_avg_precision_at_iou(gt_boxes=gt_boxes, pred_bb=preds_boxes, iou_thr=iou_threshold)
   logger.info("mAP:{:.2}".format(map['avg_prec']))
   return map
 
