@@ -21,21 +21,24 @@ pred_boxes={"img_00285.png": {"boxes":
                               "scores": [0.0739, 0.0843, 0.091, 0.1008]}}
 
 def create_gt_boxes(y_test):
-  gt_boxes = dict()
-  for id in range(len(y_test)):
+    gt_boxes = dict()
+    for id in range(len(y_test)):
     gt_boxes[str(id)] = [list(y_test[id])]
 
-  return gt_boxes
+    logger.info("gt_boxes: {}".format(gt_boxes))
+    return gt_boxes
 
 def create_pred_boxes(y_preds, scores):
-  pred_boxes = dict()
-  for id in range(len(y_preds)):
+    pred_boxes = dict()
+    for id in range(len(y_preds)):
     pred_boxes[str(id)] =  {
         "boxes": [y_preds[id]],
         "scores": list(scores[id])
     }
 
-  return pred_boxes
+    logger.info("pred_boxes: {}".format(pred_boxes))
+
+    return pred_boxes
 
 # NB: the values are scaled down to 0..1
 def to_rect(y):
@@ -51,7 +54,9 @@ def to_rect(y):
 def calculate_map(y_test, y_preds, threshold=0.5):
   y_test_scaled = [to_rect(y*IMAGE_SIZE) for y in y_test]
   y_preds_scaled = [to_rect(y*IMAGE_SIZE) for y in y_preds]
-  scores = [[calc_iou(y_test_scaled[id], y_preds_scaled[id])] for id in range(len(y_test_scaled))]
+
+  scores = [[bb_iou(y_test_scaled[id], y_preds_scaled[id])] for id in range(len(y_test_scaled))]
+  logger.info("scores: {}".format(score))
 
   gt_boxes = create_gt_boxes(y_test_scaled)
   preds_boxes = create_pred_boxes(y_preds_scaled, scores)
@@ -148,58 +153,6 @@ def get_model_scores(pred_boxes):
                 model_score[score].append(img_id)
     return model_score
 
-# https://towardsdatascience.com/evaluating-performance-of-an-object-detection-model-137a349c517b
-def calc_iou(gt_bbox, pred_bbox):
-    '''
-    This function takes the predicted bounding box and ground truth bounding box and 
-    return the IoU ratio
-    '''
-    x_topleft_gt, y_topleft_gt, x_bottomright_gt, y_bottomright_gt = gt_bbox
-    x_topleft_p, y_topleft_p, x_bottomright_p, y_bottomright_p = pred_bbox
-    
-    if (x_topleft_gt > x_bottomright_gt) or (y_topleft_gt > y_bottomright_gt):
-      # return 0.0
-        raise AssertionError("Ground Truth Bounding Box is not correct")
-    if (x_topleft_p > x_bottomright_p) or (y_topleft_p > y_bottomright_p):
-        raise AssertionError("Predicted Bounding Box is not correct",
-                             x_topleft_p, x_bottomright_p, y_topleft_p, y_bottomright_gt)
-      # return 0.0
-        
-         
-    #if the GT bbox and predcited BBox do not overlap then iou=0
-    if(x_bottomright_gt < x_topleft_p):
-        # If bottom right of x-coordinate  GT  bbox is less than or above
-        # the top left of x coordinate of  the predicted BBox
-      return 0.0
-
-    # If bottom right of y-coordinate  GT  bbox is less than or above
-    # the top left of y coordinate of  the predicted BBox
-    if(y_bottomright_gt < y_topleft_p):
-      return 0.0
-    # If bottom right of x-coordinate  GT  bbox is greater than or below
-    # the bottom right  of x coordinate of  the predcited BBox
-    if(x_topleft_gt > x_bottomright_p):
-      return 0.0
-
-    # If bottom right of y-coordinate  GT  bbox is greater than or below
-    # the bottom right  of y coordinate of  the predcited BBox
-    if(y_topleft_gt > y_bottomright_p):
-      return 0.0
-    
-    GT_bbox_area = (x_bottomright_gt - x_topleft_gt + 1) * (y_bottomright_gt - y_topleft_gt + 1)
-    Pred_bbox_area =(x_bottomright_p - x_topleft_p + 1) * (y_bottomright_p - y_topleft_p + 1)
-    
-    x_top_left =np.max([x_topleft_gt, x_topleft_p])
-    y_top_left = np.max([y_topleft_gt, y_topleft_p])
-    x_bottom_right = np.min([x_bottomright_gt, x_bottomright_p])
-    y_bottom_right = np.min([y_bottomright_gt, y_bottomright_p])
-    
-    intersection_area = (x_bottom_right - x_top_left + 1) * (y_bottom_right - y_top_left  + 1)
-    
-    union_area = (GT_bbox_area + Pred_bbox_area - intersection_area)
-   
-    return intersection_area/union_area
-
 def calc_precision_recall(image_results):
     """Calculates precision and recall from the set of images
     Args:
@@ -259,7 +212,7 @@ def get_single_image_results(gt_boxes, pred_boxes, iou_thr):
     ious=[]
     for ipb, pred_box in enumerate(pred_boxes):
         for igb, gt_box in enumerate(gt_boxes):
-            iou= calc_iou(gt_box, pred_box)
+            iou = bb_iou(gt_box, pred_box)
             
             if iou >iou_thr:
                 gt_idx_thr.append(igb)
@@ -286,10 +239,59 @@ def get_single_image_results(gt_boxes, pred_boxes, iou_thr):
         fn = len(gt_boxes) - len(gt_match_idx)
     return {'true_positive': tp, 'false_positive': fp, 'false_negative': fn}
 
-def bb_iou(y_pred, y_test):
-    boxA = to_rect(y_pred*IMAGE_SIZE)
-    boxB = to_rect(y_test*IMAGE_SIZE)
+# https://towardsdatascience.com/evaluating-performance-of-an-object-detection-model-137a349c517b
+def calc_iou(gt_bbox, pred_bbox):
+    '''
+    This function takes the predicted bounding box and ground truth bounding box and 
+    return the IoU ratio
+    '''
+    x_topleft_gt, y_topleft_gt, x_bottomright_gt, y_bottomright_gt = gt_bbox
+    x_topleft_p, y_topleft_p, x_bottomright_p, y_bottomright_p = pred_bbox
+    
+    if (x_topleft_gt > x_bottomright_gt) or (y_topleft_gt > y_bottomright_gt):
+      # return 0.0
+        raise AssertionError("Ground Truth Bounding Box is not correct")
+    if (x_topleft_p > x_bottomright_p) or (y_topleft_p > y_bottomright_p):
+        raise AssertionError("Predicted Bounding Box is not correct",
+                             x_topleft_p, x_bottomright_p, y_topleft_p, y_bottomright_gt)
+      # return 0.0
+        
+         
+    #if the GT bbox and predcited BBox do not overlap then iou=0
+    if(x_bottomright_gt < x_topleft_p):
+        # If bottom right of x-coordinate  GT  bbox is less than or above
+        # the top left of x coordinate of  the predicted BBox
+      return 0.0
 
+    # If bottom right of y-coordinate  GT  bbox is less than or above
+    # the top left of y coordinate of  the predicted BBox
+    if(y_bottomright_gt < y_topleft_p):
+      return 0.0
+    # If bottom right of x-coordinate  GT  bbox is greater than or below
+    # the bottom right  of x coordinate of  the predcited BBox
+    if(x_topleft_gt > x_bottomright_p):
+      return 0.0
+
+    # If bottom right of y-coordinate  GT  bbox is greater than or below
+    # the bottom right  of y coordinate of  the predcited BBox
+    if(y_topleft_gt > y_bottomright_p):
+      return 0.0
+    
+    GT_bbox_area = (x_bottomright_gt - x_topleft_gt + 1) * (y_bottomright_gt - y_topleft_gt + 1)
+    Pred_bbox_area =(x_bottomright_p - x_topleft_p + 1) * (y_bottomright_p - y_topleft_p + 1)
+    
+    x_top_left =np.max([x_topleft_gt, x_topleft_p])
+    y_top_left = np.max([y_topleft_gt, y_topleft_p])
+    x_bottom_right = np.min([x_bottomright_gt, x_bottomright_p])
+    y_bottom_right = np.min([y_bottomright_gt, y_bottomright_p])
+    
+    intersection_area = (x_bottom_right - x_top_left + 1) * (y_bottom_right - y_top_left  + 1)
+    
+    union_area = (GT_bbox_area + Pred_bbox_area - intersection_area)
+   
+    return intersection_area/union_area
+
+def bb_iou(boxA, boxB):
     # this method is borrowed from
     # https://www.pyimagesearch.com/2016/11/07/intersection-over-union-iou-for-object-detection/
     # determine the (x, y)-coordinates of the intersection rectangle

@@ -163,7 +163,7 @@ def plot_predictions(X, y_gt, y_preds):
       rect_pred = create_patch_rectangle(y_pred*IMAGE_SIZE, (255/255, 0, 0))
       axis.add_patch(rect_pred)
 
-    iou = metrics.bb_iou(y_preds_avg[i], y_gt[i])
+    iou = metrics.bb_iou(to_rect(y_preds_avg[i]*IMAGE_SIZE), to_rect(y_gt[i]*IMAGE_SIZE))
     plt.title("IOU: {:0.2f} std: {:0.2f}".format(iou, mean_stds[i]))
     # plt.title("mean std: {:0.2f}".format(mean_stds[sample_ids[i]]))
     plt.imshow(np.clip(image, 0, 1))
