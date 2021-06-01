@@ -31,19 +31,19 @@ def average_sample_preds(y_sample_preds):
         averages.append([np.mean(y_pred[:, i]) for i in range(y_pred.shape[1])])
     return np.array(averages)
 
-def predict_on_cluster(model, X_test, y_test, iterations=50):
+def predict_on_cluster(model, X_test, y_test, iterations=50, iou_threshold=0.5):
     test_accuracy = 0
     test_loss, test_accuracy = model.evaluate(X_test, y_test, steps=1)
 
     y_preds = sample_predictions(model, X_test, iterations=iterations)
     preds_avg = average_sample_preds(y_preds)
 
-    m_ap = metrics.calculate_map(y_test, preds_avg)
+    m_ap = metrics.calculate_map(y_test, preds_avg, iou_threshold=iou_threshold)
     stds = np.mean(np.std(y_preds, axis=1), axis=1)
 
     return y_preds, m_ap, np.mean(stds, axis=0), test_accuracy
 
-def predict_on_models(dataset, bins, models, iterations=50):
+def predict_on_models(dataset, bins, models, iterations=50, iou_threshold=0.5):
     stats = []
     for model in models:
         cluster_stats = []
@@ -51,7 +51,8 @@ def predict_on_models(dataset, bins, models, iterations=50):
             X_test, Y_test = dataset.get_data(data_type=DataType.Test, cluster_id=cluster_id)
             y_preds, m_ap, std, accuracy = predict_on_cluster(model,
                                                               X_test, Y_test,
-                                                              iterations=iterations)
+                                                              iterations=iterations,
+                                                              iou_threshold=iou_threshold)
             logger.info("{} mAP: {:0.2f} std: {:0.2f} acc: {:0.2f}".format(cluster_id,
                                                                     m_ap['avg_prec'],
                                                                     std,
