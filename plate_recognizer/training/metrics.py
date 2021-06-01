@@ -85,7 +85,7 @@ def get_avg_precision_at_iou(gt_boxes, pred_bb, iou_thr=0.5):
     # Loop over model score thresholds and calculate precision, recall
     for ithr, model_score_thr in enumerate(sorted_model_scores[:-1]):
         # On first iteration, define img_results for the first time:
-        logger.info("Mode score : ", model_score_thr)
+        logger.info("Mode score : {}".format(model_score_thr))
         img_ids = gt_boxes.keys() if ithr == 0 else model_scores[model_score_thr]
     
         for img_id in img_ids:
