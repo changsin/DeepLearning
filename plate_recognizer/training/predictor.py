@@ -33,7 +33,7 @@ def average_sample_preds(y_sample_preds):
         averages.append([np.mean(y_pred[:, i]) for i in range(y_pred.shape[1])])
     return np.array(averages)
 
-def predict_on_cluster(model, X_test, y_test, is_plot_predictions=False, iterations=50):
+def predict_on_cluster(model, X_test, y_test, iterations=50):
     test_accuracy = 0
     test_loss, test_accuracy = model.evaluate(X_test, y_test, steps=1)
 
@@ -53,7 +53,7 @@ def predict_on_models(dataset, bins, models, iterations=50):
             X_test, Y_test = dataset.get_data(data_type=DataType.Test, cluster_id=cluster_id)
             y_preds, m_ap, std, accuracy = predict_on_cluster(model,
                                                               X_test, Y_test,
-                                                              is_plot_predictions=False, iterations=iterations)
+                                                              iterations=iterations)
             logger.info("{} mAP: {:0.2f} std: {:0.2f} acc: {:0.2f}".format(cluster_id,
                                                                     m_ap['avg_prec'],
                                                                     std,
