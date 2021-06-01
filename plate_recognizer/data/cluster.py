@@ -82,7 +82,7 @@ class Cluster():
                 if cluster_id == 0:
                     merged = cluster
                 else:
-                    merged = np.vstack((merged, cluster))
+                    merged = np.hstack((merged, cluster))
 
             return merged
 
