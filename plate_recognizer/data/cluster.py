@@ -44,7 +44,7 @@ class Cluster():
         return self.get_clusters(X_fm_normalized)
 
     @staticmethod
-    def to_cluster_idx(bins, labels):
+    def to_cluster_idx(cluster_labels, bins):
         """
         param bins: range of K
         param labels: cluster labels
@@ -52,7 +52,7 @@ class Cluster():
         """
         cluster_dict = dict()
         for cluster_id in bins:
-            cluster_dict[cluster_id] = np.where(labels == cluster_id)[0]
+            cluster_dict[cluster_id] = np.where(cluster_labels == cluster_id)[0]
         return cluster_dict
 
     @staticmethod
@@ -61,12 +61,12 @@ class Cluster():
         given X_clusters, put X & y into the correct clusters
         and return the dictionary
         """
-        X_cluster_idx = to_cluster_idx(range(K), X_clusters.labels_)
+        cluster_idx = to_cluster_idx(X_clusters.labels_, range(K))
 
         X_dict = {}
         y_dict = {}
         for id in range(K):
-            ids = X_cluster_idx[id]
+            ids = cluster_idx[id]
             X_dict[id] = X[ids]
             y_dict[id] = y[ids]
 

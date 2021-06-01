@@ -82,7 +82,7 @@ class KaggleData():
             # Recluster on the unique data points
             self.X_pca_clusters, self.kmeans_pca = self.cluster.get_clusters(self.X_pca_reduced, K)
 
-        cluster_idx = self.cluster.to_cluster_idx(self.X, self.Y, self.X_pca_clusters, K)
+        cluster_idx = self.cluster.to_cluster_idx(self.X_pca_clusters.labels_, range(K))
         self.partition_on_clusters(cluster_idx, range(K))
 
     def to_json(self, path, data):
