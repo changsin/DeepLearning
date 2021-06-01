@@ -25,7 +25,7 @@ def create_gt_boxes(y_test):
     for id in range(len(y_test)):
         gt_boxes[str(id)] = [list(y_test[id])]
 
-    logger.info("gt_boxes: {}".format(gt_boxes))
+    # logger.info("gt_boxes: {}".format(gt_boxes))
     return gt_boxes
 
 def create_pred_boxes(y_preds, scores):
@@ -36,27 +36,27 @@ def create_pred_boxes(y_preds, scores):
             "scores": list(scores[id])
         }
 
-    logger.info("pred_boxes: {}".format(pred_boxes))
+    # logger.info("pred_boxes: {}".format(pred_boxes))
 
     return pred_boxes
 
 # NB: the values are scaled down to 0..1
-def to_rect(y):
-  width = np.clip(y[2], 0, IMAGE_SIZE)
-  height = np.clip(y[3], 0, IMAGE_SIZE)
+def to_rect(y, image_size=IMAGE_SIZE):
+    width = np.clip(y[2], 0, image_size)
+    height = np.clip(y[3], 0, image_size)
 
-  if width < 0 or height < 0:
-    logger.error("ERROR: negative width or height ", width, height, y)
-    raise AssertionError("Negative width or height")
+    if width < 0 or height < 0:
+        logger.error("ERROR: negative width or height ", width, height, y)
+        raise AssertionError("Negative width or height")
 
-  return int(y[0] - width/2), int(y[1] - height/2), int(y[0] + width/2), int(y[1] + height/2)
+    return int(y[0] - width/2), int(y[1] - height/2), int(y[0] + width/2), int(y[1] + height/2)
 
-def calculate_map(y_test, y_preds, threshold=0.5):
-  y_test_scaled = [to_rect(y*IMAGE_SIZE) for y in y_test]
-  y_preds_scaled = [to_rect(y*IMAGE_SIZE) for y in y_preds]
+def calculate_map(y_test, y_preds, threshold=0.5, image_size=IMAGE_SIZE):
+  y_test_scaled = [to_rect(y*image_size) for y in y_test]
+  y_preds_scaled = [to_rect(y*image_size) for y in y_preds]
 
   scores = [[bb_iou(y_test_scaled[id], y_preds_scaled[id])] for id in range(len(y_test_scaled))]
-  logger.info("scores: {}".format(scores))
+#   logger.info("scores: {}".format(scores))
 
   gt_boxes = create_gt_boxes(y_test_scaled)
   preds_boxes = create_pred_boxes(y_preds_scaled, scores)
