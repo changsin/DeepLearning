@@ -207,3 +207,24 @@ class KaggleData():
             self.train_idx[id] = train_idx
             self.val_idx[id] = val_idx
             self.test_idx[id] = test_idx
+
+def noise_annotation(y, min, max):
+  y_noise = []
+  for y1 in y:
+    x_center = np.random.uniform(min, max, 1)
+    y_center = np.random.uniform(min, max, 1)
+    width = np.random.uniform(0, x_center, 1)
+    height = np.random.uniform(0, y_center, 1)
+
+    y_noise.append([x_center, y_center, width, height])
+    # y1_noise = []
+    # for e in y1:
+    #   # num = int(np.random.normal(loc=e, scale=scale, size=1))
+    #   num = int(np.random.noncentral_chisquare(loc=e, scale=scale, size=1))
+    #   y1_noise.append(np.clip(num, 0, IMAGE_SIZE))
+    # noise = np.random.noncentral_chisquare(100, 4, 4), 0, 100)
+  return np.array(y_noise).reshape((-1))
+
+# print("original: ", y_raw[0])
+# y_noise = noise_annotation(y_raw, 5)
+# print("with noise: ", y_noise[0])
