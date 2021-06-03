@@ -220,3 +220,101 @@ def get_top_n_similar_images(features, n=10):
 
     topn_sim = np.argsort(-similarities[n], axis=0)[0:12]
     topn_sim
+
+
+#####
+# Better PCA
+# https://gtraskas.github.io/post/ex7/
+
+import scipy.linalg as linalg
+
+# Create a function to normalize features.
+def featureNormalize(X):
+    """
+    Returns a normalized version of X where the mean
+    value of each feature is 0 and the standard deviation
+    is 1. This is often a good preprocessing step to do
+    when working with learning algorithms.
+    Args:
+        X     : array(# of training examples, n)
+    Returns:
+        X_norm: array(# of training examples, n)
+        mu    : array(n,)
+        sigma : array(n,)
+    """
+    mu = np.mean(X, axis=0)
+    X_norm = X - mu
+    # Set Delta Degrees of Freedom (ddof) to 1, to compute
+    # the std based on a sample and not the population.
+    sigma = np.std(X_norm, axis=0, ddof=1)
+    X_norm = X_norm / sigma
+    
+    return X_norm, mu, sigma
+
+# Create a function to compute the eigenvectors and eigenvalues.
+def pca(X):
+    """
+    Returns the eigenvectors U, the eigenvalues (on diagonal) in S.
+    Args:
+        X: array(# of training examples, n)
+    Returns:
+        U: array(n, n)
+        S: array(n, n)
+    """
+    # Get some useful values
+    m, n, _, _ = X.shape
+    
+    # Init U and S.
+    U = np.zeros(n)
+    S = np.zeros(n)
+    
+    # When computing the covariance matrix, we have
+    # to divide by m (the number of examples).
+    sigma = (1. / m) * np.dot(X.T, X)
+    
+    # Compute the eigenvectors and eigenvalues
+    # of the covariance matrix.
+    U, S, V = linalg.svd(sigma)
+    S = linalg.diagsvd(S, len(S), len(S))
+
+    return U, S
+
+
+def execute_better_pca():
+    print('Running PCA on face dataset...')
+
+    # Before running PCA, it is important to first normalize X
+    # by subtracting the mean value from each feature.
+    X_norm, mu, _ = featureNormalize(X_train)
+
+    # Run PCA.
+    U, S = pca(X_norm)
+
+    # Visualize the top 36 eigenvectors found.
+    displayData(U.T, 6)
+
+    # Normalize X.
+    X_norm, mu, _ = featureNormalize(X)
+
+    # Run PCA.
+    U, S = pca(X_norm)
+
+    # Draw the eigenvectors centered at mean of data. These lines show the
+    # directions of maximum variations in the dataset.
+    plt.figure(figsize=(6, 6))
+    plt.scatter(X[:,0], X[:,1], edgecolors='b', facecolors='none')
+    plt.title("Figure 2: Computed eigenvectors of the dataset.")
+    # Compute the pairs of points to draw the lines.
+    p1 = mu
+    p2 = mu + 1.5 * S[0,0] * U[:,0].T
+    p3 = mu + 1.5 * S[1,1] * U[:,1].T
+    plt.plot([p1[0], p2[0]], [p1[1], p2[1]], c='k', linewidth=2)
+    plt.plot([p1[0], p3[0]], [p1[1], p3[1]], c='k', linewidth=2)
+    plt.show()
+
+    print('Top eigenvector:')
+    print('U[:,0]= {:f} {:f}'.format(U[0,0], U[1,0]))
+    print('(expected to see -0.707107 -0.707107)')
+
+## 3d plotting
+## X_train_pca_3d = to_pca_3d(X_train, y_train)
