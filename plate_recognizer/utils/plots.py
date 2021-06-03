@@ -209,3 +209,13 @@ def plot_stats_by_type(stats_data, x_bins, column, title, K=5, merge=False):
 
   ax.set_title(title)
   ax.legend()
+
+def plot_train_scores(train) :
+    accuracy = train.history['accuracy']
+    val_accuracy = train.history['val_accuracy']
+    epochs = range(len(accuracy))
+    plt.plot(epochs, accuracy, 'b', label='Score apprentissage')
+    plt.plot(epochs, val_accuracy, 'r', label='Score validation')
+    plt.title('Scores')
+    plt.legend()
+    plt.show()

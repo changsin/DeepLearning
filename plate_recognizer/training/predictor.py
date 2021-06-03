@@ -10,6 +10,12 @@ logger = get_logger(__name__)
 
 # run predictions many times to get the distributions
 def sample_predictions(model, X, iterations=50):
+    """
+    Need to change 3x2x4 to 2x3x4.
+        (iterations)x(samples)x(coordinates)
+    to
+        (samples)x(iterations)x(coordinates) 
+    """
     predicted = []
     for _ in range(iterations):
         predicted.append(model(X).numpy())
@@ -61,3 +67,13 @@ def predict_on_models(dataset, bins, models, iterations=50, iou_threshold=0.5):
         stats.append(cluster_stats)
 
     return np.array(stats)
+
+
+def get_prediction_distributions():
+    min_id = np.argmin(mean_stds)
+    max_id = np.argmax(mean_stds)
+
+    print("min:", min_id, mean_stds[min_id])
+    print("max:", max_id, mean_stds[max_id])
+
+    [print(f"{id} pred std: ", stds[id], f"mean_std:  {mean_stds[id]})") for id in range(len(X_test))]

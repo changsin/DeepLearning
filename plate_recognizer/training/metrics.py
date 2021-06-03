@@ -292,6 +292,12 @@ def calc_iou(gt_bbox, pred_bbox):
     return intersection_area/union_area
 
 def bb_iou(boxA, boxB):
+    """
+    ## IOU
+    To calculate the accuracy between the prediction and the ground truth, IOU is most often used.
+     The formula for IOU is:
+        $$ IOU = \frac{size \space of \space intersection}{size \space of \space union} $$
+    """
     # this method is borrowed from
     # https://www.pyimagesearch.com/2016/11/07/intersection-over-union-iou-for-object-detection/
     # determine the (x, y)-coordinates of the intersection rectangle
