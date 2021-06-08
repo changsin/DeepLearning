@@ -114,10 +114,10 @@ class Cluster():
         mapping1 = {}
         mapping2 = {}
 
-        for k in bins:
         # Building and fitting the model
-        kmeanModel = KMeans(n_clusters=k).fit(X)
-        kmeanModel.fit(X)
+        for k in bins:
+            kmeanModel = KMeans(n_clusters=k).fit(X)
+            kmeanModel.fit(X)
 
         distortions.append(sum(np.min(cdist(X, kmeanModel.cluster_centers_,
                                             distance_fn), axis=1)) / X.shape[0])
