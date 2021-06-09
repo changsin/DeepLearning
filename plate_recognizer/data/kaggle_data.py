@@ -94,13 +94,13 @@ class KaggleData():
             # Recluster on the unique data points
             self.X_pca_clusters, self.kmeans_pca = self.cluster.get_clusters(self.X_pca_reduced, K)
 
-    def partition_on_clusters(self, bins, val_size=0.1, test_size=0.2, shuffle=True):
+    def partition_on_clusters(self, K=5, val_size=0.1, test_size=0.2, shuffle=True):
         cluster_idx = self.cluster.to_cluster_idx(self.X_pca_clusters.labels_, range(K))
         self.partition_on_clusters(cluster_idx, range(K))
         
         # for each cluster reserve test_size portion for test data
         # just partition the idx, not the actual data as the idx can be handy
-        for id in bins:
+        for id in range(K):
             train_idx, test_idx, _, _ = \
                 train_test_split(cluster_idx[id], cluster_idx[id], test_size=test_size, shuffle=shuffle)
             train_idx, val_idx, _, _ = \
