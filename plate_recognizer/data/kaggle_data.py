@@ -66,6 +66,18 @@ class KaggleData():
         self.Y_raw = self.load_labels(self.Y_path)
         self.X, self.Y = self.normalize(self.X_raw, self.Y_raw)
 
+    # transform to arrays and normalize
+    def normalize(self, X_raw, y_raw):
+        X = np.array(X_raw)
+        y = np.array(y_raw)
+        y = y.reshape((y.shape[0], -1))
+
+        #  Renormalisation
+        X = X / IMAGE_SIZE
+        y = y / IMAGE_SIZE
+
+        return X, y
+
     def cluster_data(self, K=5, unique=True):
         self.X_pca_reduced, pca = self.cluster.get_pca_reduced(self.X)
         self.X_pca_clusters, self.kmeans_pca = self.cluster.get_clusters(self.X_pca_reduced, K)
@@ -82,8 +94,21 @@ class KaggleData():
             # Recluster on the unique data points
             self.X_pca_clusters, self.kmeans_pca = self.cluster.get_clusters(self.X_pca_reduced, K)
 
+    def partition_on_clusters(self, bins, val_size=0.1, test_size=0.2, shuffle=True):
         cluster_idx = self.cluster.to_cluster_idx(self.X_pca_clusters.labels_, range(K))
         self.partition_on_clusters(cluster_idx, range(K))
+        
+        # for each cluster reserve test_size portion for test data
+        # just partition the idx, not the actual data as the idx can be handy
+        for id in bins:
+            train_idx, test_idx, _, _ = \
+                train_test_split(cluster_idx[id], cluster_idx[id], test_size=test_size, shuffle=shuffle)
+            train_idx, val_idx, _, _ = \
+                train_test_split(train_idx, train_idx, test_size=val_size, shuffle=shuffle)
+
+            self.train_idx[id] = train_idx
+            self.val_idx[id] = val_idx
+            self.test_idx[id] = test_idx
 
     def to_json(self, path, data):
         """
@@ -182,31 +207,6 @@ class KaggleData():
             else:
                 y_raw.append(self.resize_annotation(file))
         return np.array(y_raw)
-
-    # transform to arrays and normalize
-    def normalize(self, X_raw, y_raw):
-        X = np.array(X_raw)
-        y = np.array(y_raw)
-        y = y.reshape((y.shape[0], -1))
-
-        #  Renormalisation
-        X = X / IMAGE_SIZE
-        y = y / IMAGE_SIZE
-
-        return X, y
-
-    def partition_on_clusters(self, cluster_idx, bins, val_size=0.1, test_size=0.2):
-        # for each cluster reserve test_size portion for test data
-        # just partition the idx, not the actual data as the idx can be handy
-        for id in bins:
-            train_idx, test_idx, _, _ = \
-                train_test_split(cluster_idx[id], cluster_idx[id], test_size=test_size, shuffle=False)
-            train_idx, val_idx, _, _ = \
-                train_test_split(train_idx, train_idx, test_size=val_size, shuffle=False)
-
-            self.train_idx[id] = train_idx
-            self.val_idx[id] = val_idx
-            self.test_idx[id] = test_idx
 
 def noise_annotation(y, min, max):
   y_noise = []
