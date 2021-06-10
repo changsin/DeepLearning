@@ -87,13 +87,13 @@ class Cluster():
             return merged
 
     @staticmethod
-    def find_duplicates(X_train_pca):
+    def find_duplicates(X_train_pca, threshold=0.1):
         # Calculate distances of all points
         distances = cdist(X_train_pca, X_train_pca)
 
         # Find duplicates (very similar images)
         # dupes = np.array([np.where(distances[id] < 1) for id in range(distances.shape[0])]).reshape(-1)
-        dupes = [np.array(np.where(distances[id] < 1)).reshape(-1).tolist() \
+        dupes = [np.array(np.where(distances[id] < threshold)).reshape(-1).tolist() \
                 for id in range(distances.shape[0])]
 
         to_remove = set()
