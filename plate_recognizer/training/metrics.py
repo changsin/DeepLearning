@@ -402,7 +402,8 @@ def mean_average_precision(
     def to_pred_boxes(y_preds, y_test):
         pred_boxes = []
         for id in range(len(y_preds)):
-            score = intersection_over_union(y_test[id], y_preds[id])
+            score = intersection_over_union(torch.from_numpy(y_test[id]),
+                                            torch.from_numpy(y_preds[id]))
             pred_boxes.append([0, 0, score] + y_preds[id].tolist())
 
         return pred_boxes
@@ -466,8 +467,8 @@ def mean_average_precision(
 
             for idx, gt in enumerate(ground_truth_img):
                 iou = intersection_over_union(
-                    torch.from_numpy(detection[3:]),
-                    torch.from_numpy(gt[3:]),
+                    torch.tensor(detection[3:]),
+                    torch.tensor(gt[3:]),
                     box_format=box_format,
                 )
 
