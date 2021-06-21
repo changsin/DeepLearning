@@ -61,7 +61,7 @@ def predict_on_models(dataset, bins, models, iterations=50, iou_threshold=0.5):
                                                               iterations=iterations,
                                                               iou_threshold=iou_threshold)
             logger.info("{} mAP: {:0.2f} std: {:0.2f} acc: {:0.2f}".format(cluster_id,
-                                                                    m_ap['avg_prec'],
+                                                                    m_ap,
                                                                     std,
                                                                     accuracy))
             cluster_stats.append([np.round(m_ap['avg_prec'], 3), np.round(std, 3), np.round(accuracy, 3)])
