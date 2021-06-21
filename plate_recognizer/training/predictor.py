@@ -64,7 +64,7 @@ def predict_on_models(dataset, bins, models, iterations=50, iou_threshold=0.5):
                                                                     m_ap,
                                                                     std,
                                                                     accuracy))
-            cluster_stats.append([np.round(m_ap['avg_prec'], 3), np.round(std, 3), np.round(accuracy, 3)])
+            cluster_stats.append([np.round(m_ap, 3), np.round(std, 3), np.round(accuracy, 3)])
         stats.append(cluster_stats)
 
     return np.array(stats)
