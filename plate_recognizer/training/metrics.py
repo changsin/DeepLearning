@@ -466,8 +466,8 @@ def mean_average_precision(
 
             for idx, gt in enumerate(ground_truth_img):
                 iou = intersection_over_union(
-                    torch.tensor(detection[3:]),
-                    torch.tensor(gt[3:]),
+                    torch.from_numpy(detection[3:]),
+                    torch.from_numpy(gt[3:]),
                     box_format=box_format,
                 )
 
