@@ -1,5 +1,6 @@
 import matplotlib.patches as patches
 import numpy as np
+import torch
 
 import FSDL.plate_recognizer.training.metrics as metrics
 import FSDL.plate_recognizer.training.predictor as predictor
@@ -165,7 +166,7 @@ def plot_predictions(X, y_gt, y_preds):
 
 #    iou = metrics.bb_iou(metrics.to_rect(y_preds_avg[i]*IMAGE_SIZE),
 #                         metrics.to_rect(y_gt[i]*IMAGE_SIZE))
-    iou = metrics.intersection_over_union(y_preds_avg[i], y_gt[i])
+    iou = metrics.intersection_over_union(torch.from_numpy(y_preds_avg[i]), torch.from_numpy(y_gt[i]))
     plt.title("IOU: {:0.2f} std: {:0.2f}".format(iou, mean_stds[i]))
     # plt.title("mean std: {:0.2f}".format(mean_stds[sample_ids[i]]))
     plt.imshow(np.clip(image, 0, 1))
