@@ -378,7 +378,7 @@ def intersection_over_union(boxes_preds, boxes_labels, box_format="midpoint"):
 
 
 def mean_average_precision(
-    pred_boxes, true_boxes, iou_threshold=0.5, box_format="midpoint", num_classes=20
+    preds, y_test, iou_threshold=0.5, box_format="midpoint", num_classes=20
 ):
     """
     Calculates mean average precision 
@@ -392,6 +392,23 @@ def mean_average_precision(
     Returns:
         float: mAP value across all classes given a specific IoU threshold 
     """
+    def to_gt_boxes(y_test):
+        gt_boxes = []
+        for id in range(len(y_test)):
+            gt_boxes.append([0, 0, 0] + y_test[id].tolist())
+
+        return gt_boxes
+
+    def to_pred_boxes(y_preds, y_test):
+        pred_boxes = []
+        for id in range(len(y_preds)):
+            score = intersection_over_union(y_test[id], y_preds[id])
+            pred_boxes.append([0, 0, score] + y_preds[id].tolist())
+
+        return pred_boxes
+
+    pred_boxes = to_pred_boxes(preds, y_test)
+    true_boxes = to_gt_boxes(y_test)
 
     # list storing all AP for respective classes
     average_precisions = []
