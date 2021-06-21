@@ -20,6 +20,20 @@ def to_rect(y, image_size=IMAGE_SIZE):
 
     return int(y[0] - width/2), int(y[1] - height/2), int(y[0] + width/2), int(y[1] + height/2)
 
+
+def to_dummy_detection_boxes(y_test):
+    """
+    To be processed by mean_average_precision(), it needs to be in a specific format.
+    The format of the detection box is:
+    [run_id, class_id, probability, x1, y1, width, height]
+    There is only one class in our case, so we set everything to 0
+    """
+    gt_boxes = []
+    for id in range(len(y_test)):
+        gt_boxes.append([0, 0, 0] + y_test[id].tolist())
+
+    return gt_boxes
+
 def mean_average_precision(
     y_test, preds, iou_threshold=0.5, box_format="midpoint", num_classes=1
 ):
@@ -38,22 +52,8 @@ def mean_average_precision(
     Returns:
         float: mAP value across all classes given a specific IoU threshold 
     """
-    def to_gt_boxes(y_test):
-        gt_boxes = []
-        for id in range(len(y_test)):
-            gt_boxes.append([0, 0, 0] + y_test[id].tolist())
-
-        return gt_boxes
-
-    def to_pred_boxes(y_preds):
-        pred_boxes = []
-        for id in range(len(y_preds)):
-            pred_boxes.append([0, 0, 0] + y_preds[id].tolist())
-
-        return pred_boxes
-
-    pred_boxes = to_pred_boxes(preds)
-    true_boxes = to_gt_boxes(y_test)
+    pred_boxes = to_dummy_detection_boxes(preds)
+    true_boxes = to_dummy_detection_boxes(y_test)
 
     # list storing all AP for respective classes
     average_precisions = []
