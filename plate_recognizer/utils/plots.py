@@ -163,8 +163,9 @@ def plot_predictions(X, y_gt, y_preds):
       rect_pred = create_patch_rectangle(y_pred*IMAGE_SIZE, (255/255, 0, 0))
       axis.add_patch(rect_pred)
 
-    iou = metrics.bb_iou(metrics.to_rect(y_preds_avg[i]*IMAGE_SIZE),
-                         metrics.to_rect(y_gt[i]*IMAGE_SIZE))
+#    iou = metrics.bb_iou(metrics.to_rect(y_preds_avg[i]*IMAGE_SIZE),
+#                         metrics.to_rect(y_gt[i]*IMAGE_SIZE))
+    iou = metrics.intersection_over_union(y_preds_avg[i], y_gt[i])
     plt.title("IOU: {:0.2f} std: {:0.2f}".format(iou, mean_stds[i]))
     # plt.title("mean std: {:0.2f}".format(mean_stds[sample_ids[i]]))
     plt.imshow(np.clip(image, 0, 1))
