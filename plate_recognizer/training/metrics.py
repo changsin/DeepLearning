@@ -378,7 +378,7 @@ def intersection_over_union(boxes_preds, boxes_labels, box_format="midpoint"):
 
 
 def mean_average_precision(
-    preds, y_test, iou_threshold=0.5, box_format="midpoint", num_classes=20
+    y_test, preds, iou_threshold=0.5, box_format="midpoint", num_classes=1
 ):
     """
     Calculates mean average precision 

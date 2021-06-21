@@ -44,7 +44,8 @@ def predict_on_cluster(model, X_test, y_test, iterations=50, iou_threshold=0.5):
     y_preds = sample_predictions(model, X_test, iterations=iterations)
     preds_avg = average_sample_preds(y_preds)
 
-    m_ap = metrics.calculate_map(y_test, preds_avg, iou_threshold=iou_threshold)
+#    m_ap = metrics.calculate_map(y_test, preds_avg, iou_threshold=iou_threshold)
+    m_ap = metrics.mean_average_precision(y_test, preds_avg)
     stds = np.mean(np.std(y_preds, axis=1), axis=1)
 
     return y_preds, m_ap, np.mean(stds, axis=0), test_accuracy
