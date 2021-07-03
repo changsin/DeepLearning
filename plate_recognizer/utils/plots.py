@@ -76,17 +76,18 @@ def plot_pca_clusters(X_train_pca, kmeans):
     # Plot the centroids as a white X
     centroids = kmeans.cluster_centers_
 
-    markers = ["o", "1", "2", "3", "4"]
+    # markers = ["o", "1", "2", "3", "4"]
     for id in range(len(centroids)):
         c = centroids[id]
-        plt.scatter(c[0], c[1], marker=markers[id], s=169, linewidths=3,
+    #    plt.scatter(c[0], c[1], marker=markers[id], s=169, linewidths=3,
+    #                color="w", zorder=10)
+        plt.scatter(c[0], c[1], s=100, linewidths=3,
                     color="w", zorder=10)
 
     # plt.scatter(centroids[:, 0], centroids[:, 1], marker="x", s=169, linewidths=3,
     #             color="w", zorder=10)
     # https://matplotlib.org/2.0.2/api/markers_api.html#module-matplotlib.markers
-    plt.title("K-means clustering on the PCA-reduced data\n"
-                "Centroids 0-o, 1-down, 2-up, 3-left, 4-right tri")
+    plt.title("K-means clustering on the PCA-reduced data")
     plt.xlim(x_min, x_max)
     plt.ylim(y_min, y_max)
     plt.xticks(())
