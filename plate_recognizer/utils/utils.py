@@ -11,6 +11,9 @@ from tqdm import tqdm
 import numpy as np
 import smart_open
 
+import os
+import glob
+
 
 def to_categorical(y, num_classes):
     """1-hot encode a tensor."""
@@ -74,3 +77,26 @@ def download_url(url, filename):
     """Download a file from url to filename, with a progress bar."""
     with TqdmUpTo(unit="B", unit_scale=True, unit_divisor=1024, miniters=1) as t:
         urlretrieve(url, filename, reporthook=t.update_to, data=None)  # nosec
+
+
+def glob_files(path):
+    """
+    path: the path
+    return: all the files under the path
+    """
+    search_string = os.path.join(path,'*')
+    files = glob.glob(search_string)
+
+    paths = []
+    for f in files:
+        if os.path.isdir(f):
+            sub_paths = glob_files(f + '/')
+            paths += sub_paths
+        else:
+            paths.append(f)
+
+    # We sort the images in alphabetical order to match them
+    #  to the annotation files
+    paths.sort()
+
+    return paths
