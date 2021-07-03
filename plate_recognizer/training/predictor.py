@@ -2,7 +2,7 @@ import numpy as np
 
 import FSDL.plate_recognizer.training.metrics as metrics
 
-from FSDL.plate_recognizer.data.base_data_module import DataType
+from FSDL.plate_recognizer.data.base_data import DataType
 from FSDL.plate_recognizer.utils.logger import get_logger
 
 logger = get_logger(__name__)

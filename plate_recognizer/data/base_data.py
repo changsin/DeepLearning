@@ -3,8 +3,16 @@ import cv2
 
 import FSDL.plate_recognizer.utils as utils
 
+from enum import Enum
+
 IMAGE_SIZE = 224
 DATA_ROOT = "/content/drive/MyDrive/data/DataCentric"
+
+
+class DataType(Enum):
+    Train = 1
+    Val = 2
+    Test = 3
 
 
 class BaseData():
